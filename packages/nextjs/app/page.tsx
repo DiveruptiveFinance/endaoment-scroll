@@ -40,8 +40,8 @@ const Home: NextPage = () => {
             <div className="flex gap-4 justify-center mt-8">
               {connectedAddress ? (
                 <>
-                  <Link href="/vaults">
-                    <button className="btn btn-primary btn-lg">🏦 Explore Vaults</button>
+                  <Link href="/start">
+                    <button className="btn btn-primary btn-lg">Get Started →</button>
                   </Link>
                   <Link href="/dashboard">
                     <button className="btn btn-outline btn-lg">My Dashboard</button>
@@ -75,8 +75,8 @@ const Home: NextPage = () => {
           resources, and vote together on student funding.
         </span>
         <div>
-          <Link href="/vaults">
-            <button className="btn btn-sm btn-primary">Explore Vaults</button>
+          <Link href="/start">
+            <button className="btn btn-sm btn-primary">Get Started</button>
           </Link>
         </div>
       </div>
@@ -200,14 +200,9 @@ const Home: NextPage = () => {
             </p>
             <div className="card-actions gap-4">
               {connectedAddress ? (
-                <>
-                  <Link href="/vaults">
-                    <button className="btn btn-neutral btn-lg">🏦 Explore Vaults</button>
-                  </Link>
-                  <Link href="/vault/create">
-                    <button className="btn btn-outline btn-neutral btn-lg">Create Vault (Whales)</button>
-                  </Link>
-                </>
+                <Link href="/start">
+                  <button className="btn btn-neutral btn-lg">Get Started →</button>
+                </Link>
               ) : (
                 <button className="btn btn-neutral btn-lg">Connect Wallet to Start</button>
               )}
