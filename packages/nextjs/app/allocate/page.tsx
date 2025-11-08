@@ -133,13 +133,25 @@ export default function AllocatePage() {
 
     try {
       // Convert percentages to actual share amounts
-      // Contract requires: totalVotes == userShares
+      // Contract requires: totalVotes == userShares exactly
       const studentArray = Object.keys(allocations).filter(addr => allocations[addr] > 0);
-      const voteArray = studentArray.map(addr => {
-        // Calculate vote amount as: (percentage / 100) * userShares
-        const percentage = allocations[addr];
-        const voteAmount = (BigInt(percentage) * userShares) / 100n;
-        return voteAmount;
+
+      // Calculate votes for all but last student, then give remainder to last student
+      // This ensures vote total exactly equals userShares (avoiding rounding errors)
+      const voteArray: bigint[] = [];
+      let remainingShares = userShares;
+
+      studentArray.forEach((addr, index) => {
+        if (index === studentArray.length - 1) {
+          // Last student gets all remaining shares
+          voteArray.push(remainingShares);
+        } else {
+          // Calculate proportional vote amount
+          const percentage = allocations[addr];
+          const voteAmount = (BigInt(percentage) * userShares) / 100n;
+          voteArray.push(voteAmount);
+          remainingShares -= voteAmount;
+        }
       });
 
       if (!vaultAddress) throw new Error("Vault address not found");
