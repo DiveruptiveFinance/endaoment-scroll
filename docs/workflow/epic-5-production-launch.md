@@ -10,9 +10,52 @@ Final quality assurance, testing, and deployment preparation for hackathon submi
 
 ## Tickets
 
-### E5-T1: End-to-End Testing
+### E5-T1: Base Sepolia Deployment
 **Estimate**: 2-3 hours
-**Dependencies**: Epic 4 complete
+**Dependencies**: Epic 4 complete (frontend integration working locally)
+
+Deploy all smart contracts to Base Sepolia testnet with proper configuration and verification.
+
+**Deploy Sequence:**
+1. MockUSDC (or use existing Base Sepolia USDC)
+2. StudentRegistry (owner = deployer)
+3. AllocationManager (studentRegistry address)
+4. EndaomentVault (usdc, whale, name)
+5. Register vault with AllocationManager
+6. Set AllocationManager in StudentRegistry
+
+**Helper Scripts:**
+```bash
+yarn hardhat:deploy --network baseSepolia
+yarn seed:students --network baseSepolia  # Add 8 test students
+yarn create:vault --network baseSepolia   # Create demo vault
+yarn fund:users --network baseSepolia     # Give test USDC to users
+```
+
+**Files:**
+- `deploy/00_deploy_mock_usdc.ts` ✅ (already created)
+- `deploy/01_deploy_student_registry.ts` ✅ (already created)
+- `deploy/02_deploy_allocation_manager.ts` ✅ (already created)
+- `deploy/03_deploy_endaoment_vault.ts` ✅ (already created)
+- `scripts/seedStudents.ts` (to create)
+- `scripts/createTestVault.ts` (to create)
+- `scripts/fundUsers.ts` (to create)
+
+**Acceptance Criteria:**
+- [ ] All contracts deployed to Base Sepolia
+- [ ] Verified on Basescan
+- [ ] Test data seeded (8 students)
+- [ ] Demo vault created
+- [ ] Test users funded with USDC
+- [ ] Contract addresses documented
+- [ ] ABIs exported for frontend
+- [ ] Deployment guide written
+
+---
+
+### E5-T2: End-to-End Testing
+**Estimate**: 2-3 hours
+**Dependencies**: E5-T1 complete
 
 Comprehensive testing of all user flows on Base Sepolia testnet.
 
@@ -37,9 +80,9 @@ Comprehensive testing of all user flows on Base Sepolia testnet.
 
 ---
 
-### E5-T2: UI/UX Polish
+### E5-T3: UI/UX Polish
 **Estimate**: 2-3 hours
-**Dependencies**: E5-T1
+**Dependencies**: E5-T2
 
 Final polish and refinement of user interface.
 
@@ -62,7 +105,7 @@ Final polish and refinement of user interface.
 
 ---
 
-### E5-T3: Documentation & README
+### E5-T4: Documentation & README
 **Estimate**: 1-2 hours
 **Dependencies**: E5-T1
 
@@ -87,7 +130,7 @@ Create comprehensive project documentation.
 
 ---
 
-### E5-T4: Contract Verification
+### E5-T5: Contract Verification
 **Estimate**: 1 hour
 **Dependencies**: Epic 3 deployment
 
@@ -109,7 +152,7 @@ Verify all contracts on Base Sepolia block explorer.
 
 ---
 
-### E5-T5: Demo Video Production
+### E5-T6: Demo Video Production
 **Estimate**: 2-3 hours
 **Dependencies**: E5-T1, E5-T2
 
@@ -140,7 +183,7 @@ Create 2-3 minute demo video for hackathon submission.
 
 ---
 
-### E5-T6: Hackathon Submission Preparation
+### E5-T7: Hackathon Submission Preparation
 **Estimate**: 1-2 hours
 **Dependencies**: E5-T3, E5-T5
 
@@ -185,7 +228,7 @@ Deployed to: Base Sepolia testnet
 
 ---
 
-### E5-T7: Optional Vercel Deployment
+### E5-T8: Optional Vercel Deployment
 **Estimate**: 30 minutes (optional)
 **Dependencies**: E5-T1, E5-T2
 
