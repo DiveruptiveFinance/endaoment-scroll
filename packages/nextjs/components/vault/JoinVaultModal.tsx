@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { parseUnits } from "viem";
+import { useAccount } from "wagmi";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Vault } from "~~/types/vault";
 
 interface JoinVaultModalProps {
@@ -11,22 +14,65 @@ interface JoinVaultModalProps {
 
 export function JoinVaultModal({ vault, onClose }: JoinVaultModalProps) {
   const router = useRouter();
+  const { address } = useAccount();
   const [amount, setAmount] = useState(50);
   const [isLoading, setIsLoading] = useState(false);
+  const [txStatus, setTxStatus] = useState<"idle" | "approving" | "depositing">("idle");
+
+  // Read user's USDC balance
+  const { data: usdcBalance } = useScaffoldReadContract({
+    contractName: "MockUSDC",
+    functionName: "balanceOf",
+    args: [address],
+  });
+
+  // Read current allowance
+  const { data: currentAllowance } = useScaffoldReadContract({
+    contractName: "MockUSDC",
+    functionName: "allowance",
+    args: [address, "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82" as `0x${string}`],
+  });
+
+  const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
+  const { writeContractAsync: depositToVault } = useScaffoldWriteContract("EndaomentVault");
 
   const handleJoin = async () => {
+    if (!address) return;
+
     setIsLoading(true);
+    const depositAmount = parseUnits(amount.toString(), 6);
 
-    // Mock approve + deposit (2s total)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      // Step 1: Approve if needed
+      const needsApproval = !currentAllowance || currentAllowance < depositAmount;
+      if (needsApproval) {
+        setTxStatus("approving");
+        await approveUSDC({
+          functionName: "approve",
+          args: ["0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82" as `0x${string}`, depositAmount],
+        });
+      }
 
-    setIsLoading(false);
-    onClose();
-    router.push("/dashboard");
+      // Step 2: Deposit to vault
+      setTxStatus("depositing");
+      await depositToVault({
+        functionName: "deposit",
+        args: [depositAmount, address],
+      });
+
+      setIsLoading(false);
+      setTxStatus("idle");
+      onClose();
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Deposit failed:", error);
+      setIsLoading(false);
+      setTxStatus("idle");
+    }
   };
 
-  // Simple 1:1 share calculation for MVP
-  const shares = amount;
+  const formattedBalance = usdcBalance ? Number(usdcBalance) / 1e6 : 0;
+  const shares = amount; // 1:1 for simplicity
   const votingPower = (shares / (vault.totalCapital + amount)) * 100;
 
   return (
@@ -46,7 +92,7 @@ export function JoinVaultModal({ vault, onClose }: JoinVaultModalProps) {
             onChange={e => setAmount(Number(e.target.value))}
           />
           <label className="label">
-            <span className="label-text-alt">Minimum: 10 USDC • Balance: 500 USDC</span>
+            <span className="label-text-alt">Minimum: 10 USDC • Balance: {formattedBalance.toLocaleString()} USDC</span>
           </label>
         </div>
 
@@ -57,6 +103,16 @@ export function JoinVaultModal({ vault, onClose }: JoinVaultModalProps) {
             <div>• ~{votingPower.toFixed(2)}% voting power</div>
           </div>
         </div>
+
+        {isLoading && (
+          <div className="alert alert-info mt-4">
+            <span className="loading loading-spinner"></span>
+            <span className="text-sm">
+              {txStatus === "approving" && "Step 1/2: Approving USDC..."}
+              {txStatus === "depositing" && "Step 2/2: Depositing to vault..."}
+            </span>
+          </div>
+        )}
 
         <div className="alert alert-warning mt-4">
           <svg
@@ -80,11 +136,18 @@ export function JoinVaultModal({ vault, onClose }: JoinVaultModalProps) {
             Cancel
           </button>
           <button
-            className={`btn btn-primary ${isLoading ? "loading" : ""}`}
+            className={`btn btn-primary`}
             onClick={handleJoin}
-            disabled={isLoading || amount < 10}
+            disabled={isLoading || amount < 10 || !address || formattedBalance < amount}
           >
-            {isLoading ? "Depositing..." : "Deposit →"}
+            {isLoading ? (
+              <>
+                <span className="loading loading-spinner"></span>
+                {txStatus === "approving" ? "Approving..." : "Depositing..."}
+              </>
+            ) : (
+              "Deposit →"
+            )}
           </button>
         </div>
       </div>
