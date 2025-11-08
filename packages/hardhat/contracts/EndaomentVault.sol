@@ -126,8 +126,9 @@ contract EndaomentVault is ERC4626, Ownable {
      * @notice Simulate yield generation by minting USDC for demo purposes
      * @param months Number of months of yield to generate (1-12)
      * @dev Mints real USDC tokens based on 5% APY calculation
+     * @dev Public function for demo - allows anyone to generate yield for testing
      */
-    function simulateYield(uint256 months) external onlyOwner {
+    function simulateYield(uint256 months) external {
         require(months > 0 && months <= 12, "Months must be between 1 and 12");
         require(totalSupply() > 0, "No deposits yet");
 
