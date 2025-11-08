@@ -70,7 +70,7 @@ export const FEATURES = {
 // UI Configuration
 export const UI_CONFIG = {
   STUDENTS_PER_PAGE: 8,
-  MIN_DONATION_USD: 10,
+  MIN_DONATION_USD: 1,
   DEFAULT_DONATION_AMOUNTS: [25, 50, 100, 250],
   PROGRESS_BAR_COLORS: {
     low: "#ef4444", // red-500 - less than 25%

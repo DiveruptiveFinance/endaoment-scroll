@@ -42,7 +42,7 @@ export default function DonatePage() {
             <div className="text-6xl mb-4">✅</div>
             <h2 className="card-title text-2xl mb-2">Donation Successful!</h2>
             <p className="mb-4">
-              You donated ${amount} {token} to {student.name}&apos;s education
+              You donated {amount} {token} to {student.name}&apos;s education
             </p>
             <div className="text-sm text-base-content/60 mb-6">
               Transaction: <code className="text-xs">{mockTxHash.slice(0, 20)}...</code>
@@ -103,7 +103,7 @@ export default function DonatePage() {
             className="input input-bordered w-full mb-4"
             value={amount}
             onChange={e => setAmount(Number(e.target.value))}
-            min={UI_CONFIG.MIN_DONATION_USD}
+            min={0}
           />
 
           {/* Token selection */}
@@ -139,9 +139,9 @@ export default function DonatePage() {
           <button
             className={`btn btn-primary btn-lg btn-block mt-4 ${isLoading ? "loading" : ""}`}
             onClick={handleDonate}
-            disabled={isLoading || amount < UI_CONFIG.MIN_DONATION_USD}
+            disabled={isLoading || amount <= 0}
           >
-            {isLoading ? "Processing..." : `Donate $${amount} ${token}`}
+            {isLoading ? "Processing..." : `Donate ${amount} ${token}`}
           </button>
         </div>
       </div>
