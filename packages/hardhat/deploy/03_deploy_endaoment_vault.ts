@@ -46,6 +46,12 @@ const deployEndaomentVault: DeployFunction = async function (hre: HardhatRuntime
   await registerTx.wait();
   console.log("✅ Vault registered");
 
+  // Grant vault permission to mint USDC (for yield simulation)
+  console.log("🪙 Granting vault minting permission for yield simulation...");
+  const addMinterTx = await mockUSDC.addMinter(vaultAddress);
+  await addMinterTx.wait();
+  console.log("✅ Vault can now mint USDC for yield simulation");
+
   // Display vault info
   const whale = await vault.whale();
   const asset = await vault.asset();
@@ -58,6 +64,7 @@ const deployEndaomentVault: DeployFunction = async function (hre: HardhatRuntime
   console.log(`   Asset:  ${asset}`);
   console.log(`   Whale:  ${whale}`);
   console.log(`   Owner:  ${await allocationManager.getAddress()}`);
+  console.log(`   Minter: ✅ Can mint USDC`);
 };
 
 export default deployEndaomentVault;

@@ -44,8 +44,11 @@ export default function AllocatePage() {
   const [allocations, setAllocations] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [selectedMonths, setSelectedMonths] = useState(1);
+  const [isGeneratingYield, setIsGeneratingYield] = useState(false);
 
   const { writeContractAsync: allocateVotes } = useScaffoldWriteContract("AllocationManager");
+  const { writeContractAsync: simulateYield } = useScaffoldWriteContract("EndaomentVault");
 
   // Initialize allocations when students load
   useEffect(() => {
@@ -64,6 +67,32 @@ export default function AllocatePage() {
   const epochId = currentEpoch ? Number(currentEpoch.id) : 0;
   const epochEndTime = currentEpoch ? Number(currentEpoch.endTime) : Date.now() / 1000 + 86400;
   const isVotingOpen = epochEndTime * 1000 > Date.now();
+
+  // Calculate expected yield for simulation
+  const calculateExpectedYield = (months: number) => {
+    if (!totalShares || Number(totalShares) === 0) return 0;
+    const principal = Number(formatUnits(totalShares, 18));
+    const yieldAmount = (principal * 0.05 * months) / 12; // 5% APY
+    return yieldAmount.toFixed(2);
+  };
+
+  const handleGenerateYield = async () => {
+    if (!address) return;
+    setIsGeneratingYield(true);
+    try {
+      await simulateYield({
+        functionName: "simulateYield",
+        args: [BigInt(selectedMonths)],
+      });
+      // Refresh page to show new yield
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to generate yield:", error);
+      setIsGeneratingYield(false);
+    }
+  };
 
   const handleSliderChange = (studentAddr: string, value: number) => {
     setAllocations(prev => {
@@ -175,6 +204,64 @@ export default function AllocatePage() {
         </div>
       </div>
 
+      {/* Yield Generation Demo */}
+      <div className="card bg-primary text-primary-content mb-6">
+        <div className="card-body">
+          <h3 className="card-title">🎯 Demo: Generate Yield</h3>
+          <p className="text-sm opacity-90">
+            Simulate yield generation to see the impact of your allocation in real-time
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="label">
+                <span className="label-text text-primary-content">Time Period</span>
+              </label>
+              <select
+                value={selectedMonths}
+                onChange={e => setSelectedMonths(Number(e.target.value))}
+                className="select select-bordered w-full bg-base-100 text-base-content"
+              >
+                <option value={1}>1 Month (~0.42% yield)</option>
+                <option value={3}>3 Months (~1.25% yield)</option>
+                <option value={6}>6 Months (~2.5% yield)</option>
+                <option value={12}>1 Year (~5% yield)</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col justify-end">
+              <button
+                className="btn btn-secondary w-full"
+                onClick={handleGenerateYield}
+                disabled={isGeneratingYield || !totalShares || Number(totalShares) === 0}
+              >
+                {isGeneratingYield ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Generating...
+                  </>
+                ) : (
+                  `Generate ${selectedMonths} Month${selectedMonths > 1 ? "s" : ""} of Yield`
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 p-3 bg-base-100 text-base-content rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-semibold">Expected Yield:</span>
+              <span className="text-lg font-bold">${calculateExpectedYield(selectedMonths)} USDC</span>
+            </div>
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-sm">Student Share (75%):</span>
+              <span className="font-semibold">
+                ${(Number(calculateExpectedYield(selectedMonths)) * 0.75).toFixed(2)} USDC
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Progress */}
       <div className="card bg-base-100 shadow-xl mb-6">
         <div className="card-body">
@@ -191,7 +278,8 @@ export default function AllocatePage() {
       <div className="space-y-4">
         {((studentAddresses as readonly string[]) || []).map((studentAddr: string, index: number) => {
           const allocation = allocations[studentAddr] || 0;
-          const yieldAmount = ((totalYield * allocation) / 100).toFixed(2);
+          // Student gets 75% of their allocated yield
+          const studentYield = ((totalYield * 0.75 * allocation) / 100).toFixed(2);
 
           return (
             <div key={studentAddr} className="card bg-base-100 shadow">
@@ -203,7 +291,8 @@ export default function AllocatePage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-lg">{allocation}%</p>
-                    <p className="text-sm text-base-content/70">${yieldAmount}</p>
+                    <p className="text-sm text-success font-semibold">${studentYield} USDC</p>
+                    <p className="text-xs text-base-content/60">(75% of {allocation}% yield)</p>
                   </div>
                 </div>
                 <input

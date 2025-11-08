@@ -123,6 +123,37 @@ contract EndaomentVault is ERC4626, Ownable {
     }
 
     /**
+     * @notice Simulate yield generation by minting USDC for demo purposes
+     * @param months Number of months of yield to generate (1-12)
+     * @dev Mints real USDC tokens based on 5% APY calculation
+     */
+    function simulateYield(uint256 months) external onlyOwner {
+        require(months > 0 && months <= 12, "Months must be between 1 and 12");
+        require(totalSupply() > 0, "No deposits yet");
+
+        // Calculate yield: 5% APY for X months
+        // Formula: (principal * 5% * months) / 12
+        uint256 principal = totalSupply();
+        uint256 yieldAmount = (principal * 500 * months) / 12000; // 500 bps / 10000, then / 12 months
+
+        // Mint USDC directly to vault through MockUSDC
+        // Note: MockUSDC must have granted this vault minting permission
+        IERC20(asset()).approve(address(this), yieldAmount);
+
+        // Cast to interface that has mint function
+        (bool success,) = asset().call(
+            abi.encodeWithSignature("mint(address,uint256)", address(this), yieldAmount)
+        );
+        require(success, "Mint failed - vault not authorized");
+
+        // Update yield tracking
+        _updateYield();
+        accumulatedYield += yieldAmount;
+
+        emit YieldAccrued(yieldAmount, block.timestamp);
+    }
+
+    /**
      * @notice Claim yield for distribution (only owner/AllocationManager)
      * @param amount Amount of yield to claim
      */
