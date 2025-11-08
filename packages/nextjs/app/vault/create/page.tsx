@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { parseUnits } from "viem";
 import { useAccount } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 export default function CreateVaultPage() {
   const router = useRouter();
@@ -13,6 +14,10 @@ export default function CreateVaultPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [txStatus, setTxStatus] = useState<"idle" | "approving" | "depositing">("idle");
+
+  // Get vault contract address dynamically
+  const { data: vaultInfo } = useDeployedContractInfo("EndaomentVault");
+  const vaultAddress = vaultInfo?.address;
 
   // Read user's USDC balance
   const { data: usdcBalance } = useScaffoldReadContract({
@@ -25,14 +30,14 @@ export default function CreateVaultPage() {
   const { data: currentAllowance } = useScaffoldReadContract({
     contractName: "MockUSDC",
     functionName: "allowance",
-    args: [address, "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82" as `0x${string}`], // EndaomentVault address
+    args: [address, vaultAddress],
   });
 
   const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
   const { writeContractAsync: depositToVault } = useScaffoldWriteContract("EndaomentVault");
 
   const handleSubmit = async () => {
-    if (!address) return;
+    if (!address || !vaultAddress) return;
 
     setIsLoading(true);
     const depositAmount = parseUnits(deposit.toString(), 6); // USDC has 6 decimals
@@ -42,7 +47,7 @@ export default function CreateVaultPage() {
       setTxStatus("approving");
       await approveUSDC({
         functionName: "approve",
-        args: ["0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82" as `0x${string}`, depositAmount],
+        args: [vaultAddress, depositAmount],
       });
 
       // Step 2: Deposit to vault

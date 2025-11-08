@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export default function AllocatePage() {
   const router = useRouter();
   const { address } = useAccount();
+
+  // Get vault contract address dynamically
+  const { data: vaultInfo } = useDeployedContractInfo("EndaomentVault");
+  const vaultAddress = vaultInfo?.address;
 
   // Read current epoch from AllocationManager
   const { data: currentEpoch } = useScaffoldReadContract({
@@ -123,13 +127,11 @@ export default function AllocatePage() {
         return voteAmount;
       });
 
+      if (!vaultAddress) throw new Error("Vault address not found");
+
       await allocateVotes({
         functionName: "allocateVotes",
-        args: [
-          "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82" as `0x${string}`, // EndaomentVault address
-          studentArray as `0x${string}`[],
-          voteArray,
-        ],
+        args: [vaultAddress, studentArray as `0x${string}`[], voteArray],
       });
 
       setIsLoading(false);
