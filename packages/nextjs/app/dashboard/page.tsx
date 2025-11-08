@@ -21,9 +21,14 @@ export default function DashboardPage() {
     args: [userShares || 0n],
   });
 
-  const { data: userYield } = useScaffoldReadContract({
+  const { data: totalVaultYield } = useScaffoldReadContract({
     contractName: "EndaomentVault",
     functionName: "getAccruedYield",
+  });
+
+  const { data: whaleAddress } = useScaffoldReadContract({
+    contractName: "EndaomentVault",
+    functionName: "whale",
   });
 
   const { data: vaultName } = useScaffoldReadContract({
@@ -46,15 +51,25 @@ export default function DashboardPage() {
   // Calculate user stats
   const formattedShares = userShares ? Number(formatUnits(userShares, 18)) : 0;
   const formattedAssets = userAssets ? Number(formatUnits(userAssets, 6)) : 0;
-  const formattedYield = userYield ? Number(formatUnits(userYield, 6)) : 0;
   const votingPower =
     userShares && totalShares && Number(totalShares) > 0 ? (Number(userShares) / Number(totalShares)) * 100 : 0;
 
+  // Calculate user's personal yield based on donor type
+  const totalYieldAmount = totalVaultYield ? Number(formatUnits(totalVaultYield, 6)) : 0;
+  const isWhale = whaleAddress?.toLowerCase() === address?.toLowerCase();
+  const userDonorShare = isWhale ? 0.1 : 0.15; // 10% for whale, 15% for retail
+  const donorPoolYield = totalYieldAmount * userDonorShare;
+
+  // User's share of their donor pool (proportional to their vault shares)
+  const userShareRatio =
+    userShares && totalShares && Number(totalShares) > 0 ? Number(userShares) / Number(totalShares) : 0;
+  const userPersonalYield = donorPoolYield * userShareRatio;
+
   const userStats = {
     totalDonated: formattedAssets,
-    yieldGenerated: formattedYield,
+    yieldGenerated: userPersonalYield,
     studentsSupported: 0, // TODO: Read from allocations
-    lastEpochYield: formattedYield,
+    lastEpochYield: userPersonalYield,
   };
 
   return (
@@ -101,9 +116,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="stat">
-                  <div className="stat-title">Yield Earned</div>
-                  <div className="stat-value text-secondary">${formattedYield.toFixed(2)}</div>
-                  <div className="stat-desc">From DeFi strategies</div>
+                  <div className="stat-title">Your Yield</div>
+                  <div className="stat-value text-secondary">${userPersonalYield.toFixed(2)}</div>
+                  <div className="stat-desc">{isWhale ? "Whale (10%)" : "Retail (15%)"} of vault yield</div>
                 </div>
               </div>
               <div className="card-actions justify-end mt-4">
@@ -124,9 +139,9 @@ export default function DashboardPage() {
           <div className="stat-desc">Principal deposited to vault</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Yield Generated</div>
-          <div className="stat-value text-secondary">${userStats.yieldGenerated}</div>
-          <div className="stat-desc">From DeFi strategies</div>
+          <div className="stat-title">Your Yield Share</div>
+          <div className="stat-value text-secondary">${userStats.yieldGenerated.toFixed(2)}</div>
+          <div className="stat-desc">{isWhale ? "10% whale" : "15% retail"} × your vault share</div>
         </div>
         <div className="stat">
           <div className="stat-title">Students Supported</div>
