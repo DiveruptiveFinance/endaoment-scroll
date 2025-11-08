@@ -115,6 +115,14 @@ contract EndaomentVault is ERC4626, Ownable {
     }
 
     /**
+     * @notice Manually update yield calculation
+     * @dev Public function to trigger yield accrual without state changes
+     */
+    function updateYield() external {
+        _updateYield();
+    }
+
+    /**
      * @notice Claim yield for distribution (only owner/AllocationManager)
      * @param amount Amount of yield to claim
      */

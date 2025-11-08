@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits } from "viem";
 import { useAccount } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
@@ -79,14 +79,20 @@ export default function AllocatePage() {
   };
 
   const handleSubmit = async () => {
-    if (!address) return;
+    if (!address || !userShares) return;
 
     setIsLoading(true);
 
     try {
-      // Convert percentages to vote amounts
+      // Convert percentages to actual share amounts
+      // Contract requires: totalVotes == userShares
       const studentArray = Object.keys(allocations).filter(addr => allocations[addr] > 0);
-      const voteArray = studentArray.map(addr => parseUnits(allocations[addr].toString(), 18)); // Use 18 decimals for percentages
+      const voteArray = studentArray.map(addr => {
+        // Calculate vote amount as: (percentage / 100) * userShares
+        const percentage = allocations[addr];
+        const voteAmount = (BigInt(percentage) * userShares) / 100n;
+        return voteAmount;
+      });
 
       await allocateVotes({
         functionName: "allocateVotes",
