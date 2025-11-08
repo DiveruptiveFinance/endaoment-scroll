@@ -22,6 +22,18 @@ export const TOKENS = {
     decimals: 18,
     name: "Ethereum",
   },
+  MXNe: {
+    address: "0x0000000000000000000000000000000000000000", // MXNe placeholder
+    symbol: "MXNe",
+    decimals: 18,
+    name: "MXNe",
+  },
+  BRL1: {
+    address: "0x0000000000000000000000000000000000000000", // BRL1 placeholder
+    symbol: "BRL1",
+    decimals: 18,
+    name: "BRL1",
+  },
 } as const;
 
 // Epoch configuration
