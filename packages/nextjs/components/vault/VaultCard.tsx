@@ -52,7 +52,7 @@ export function VaultCard({ vault }: VaultCardProps) {
         </div>
 
         {/* Strategy */}
-        <p className="text-[16px] text-[#1A1A1A]/70 mb-4">{vault.strategy}</p>
+        <p className="text-[16px] text-[#1A1A1A]/70 mb-4">MockAavePool - 5% APY</p>
 
         {/* Stats */}
         <div className="space-y-3 mb-6">

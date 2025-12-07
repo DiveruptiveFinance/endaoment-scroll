@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getFundingClaim } from "~~/data/mockStudentFlow";
 import { getFundingProgress, getStudentById } from "~~/data/students";
+
 // import { FundingClaim } from "~~/types/student-flow";
 
 export default function ClaimFundingPage() {
