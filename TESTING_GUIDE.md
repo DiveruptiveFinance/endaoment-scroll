@@ -1,343 +1,407 @@
-# Endaoment Testing Guide
-
-## Prerequisites
-
-You should have three terminal windows open:
-
-### Terminal 1: Local Blockchain
-```bash
-yarn chain
-```
-Keep this running - you'll see transaction logs here.
-
-### Terminal 2: Deploy Contracts
-```bash
-cd packages/hardhat
-yarn deploy --reset
-```
-This deploys all contracts to localhost. You should see:
-- ✅ MockUSDC deployed
-- ✅ StudentRegistry deployed (with 8 test students)
-- ✅ AllocationManager deployed
-- ✅ EndaomentVault deployed
-
-### Terminal 3: Frontend
-```bash
-yarn start
-```
-Open http://localhost:3000
-
-## Getting Test Funds
-
-### Option 1: Use MockUSDC Faucet (Easiest)
-
-The MockUSDC contract has a `faucet()` function that gives you 10,000 USDC.
-
-**Via Frontend:**
-1. Go to "Debug Contracts" page (in navbar)
-2. Find "MockUSDC" contract
-3. Click `faucet()` function
-4. Click "Send" - you'll get 10,000 USDC instantly
-
-**Via Hardhat Console:**
-```bash
-# In packages/hardhat directory
-npx hardhat console --network localhost
-
-# Then run:
-const usdc = await ethers.getContractAt("MockUSDC", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
-await usdc.faucet()
-```
-
-### Option 2: Transfer from Deployer
-
-The deployer account has lots of USDC. You can transfer from it.
-
-## Testing Flows
-
-### 🐋 Whale Flow (Large Donor: $1000+)
-
-**Step 1: Get 10,000 USDC**
-- Use faucet method above
-- Verify balance in "Debug Contracts" page → MockUSDC → `balanceOf` → enter your address
-
-**Step 2: Create Vault**
-- Navigate to `/vault/create` or click "Create Vault" button
-- Enter vault details:
-  - Name: "Climate Research Fund"
-  - Description: "Supporting climate change research"
-  - Min deposit: 1000 USDC
-- Enter deposit amount: 1000+ USDC
-- Click "Create & Deposit"
-- **Two transactions will pop up:**
-  1. Approve USDC spending
-  2. Deposit to vault
-- Confirm both transactions in MetaMask
-
-**Step 3: Verify Vault Creation**
-- Check "Debug Contracts" → EndaomentVault → `totalAssets()` (should show your deposit)
-- Check your dashboard at `/dashboard` (should show your shares)
-
-**Step 4: Allocate Votes**
-- Navigate to `/allocate`
-- You'll see 8 test students
-- Distribute 100 points across students (e.g., 25, 25, 25, 25)
-- Click "Submit Allocation"
-- Confirm transaction
-
-**Expected Results:**
-- ✅ Vault created with 1000+ USDC
-- ✅ You own shares in vault
-- ✅ Votes allocated to students
-- ✅ Dashboard shows your position
-
-### 💰 Retail Flow (Small Donor: $10+)
-
-**Step 1: Get 100 USDC**
-- Use faucet method (gives 10,000 USDC)
-
-**Step 2: Browse Vaults**
-- Go to homepage `/`
-- You should see the vault created by whale (or create your own)
-- Click "View Details" on any vault
-
-**Step 3: Join Vault**
-- Click "Join Vault" button
-- Enter deposit amount: 50 USDC (minimum is 10)
-- Click "Deposit"
-- **Two transactions:**
-  1. Approve USDC
-  2. Deposit to vault
-- Confirm both
-
-**Step 4: Allocate Votes**
-- Go to `/allocate`
-- Distribute your voting power across students
-- Submit allocation
-
-**Step 5: View Dashboard**
-- Go to `/dashboard`
-- See your:
-  - Total shares
-  - Asset value
-  - Estimated yield
-  - Transaction history
-
-**Expected Results:**
-- ✅ Successfully deposited 50 USDC
-- ✅ Received vault shares proportional to deposit
-- ✅ Can allocate votes
-- ✅ Dashboard shows position
-
-### 🎓 Student Flow (Beneficiary)
-
-**Step 1: Create Profile**
-- Navigate to `/student/create`
-- Fill out form:
-  - Name: "Alice Johnson"
-  - University: "MIT"
-  - Field of Study: "Computer Science"
-  - Research Focus: "AI Safety"
-  - Bio: "Researching alignment..."
-- Click "Register"
-- Confirm transaction
-
-**Step 2: Verify Registration**
-- Check "Debug Contracts" → StudentRegistry → `getActiveStudents()`
-- Your address should appear in the list
-- Check `students(your_address)` to see your profile data
-
-**Step 3: View Profile** (Future feature)
-- Currently no dedicated student profile page
-- But your profile is registered on-chain
-
-**Step 4: Receive Funding**
-- When donors allocate votes to you
-- At epoch end, AllocationManager distributes yield
-- Your share = (your votes / total votes) * 75% of yield
-
-**Expected Results:**
-- ✅ Student profile created on-chain
-- ✅ Appears in active students list
-- ✅ Can receive funding allocations
-
-## Testing Allocation & Yield Distribution
-
-### Current Epoch Status
-
-**Check Current Epoch:**
-```
-Debug Contracts → AllocationManager → getCurrentEpoch()
-```
-Returns:
-- `id`: Current epoch number
-- `startTime`: Epoch start timestamp
-- `endTime`: Epoch end timestamp (30 days from start)
-- `isFinalized`: false (until epoch ends)
-
-### Simulate Epoch End (For Testing)
-
-To test yield distribution without waiting 30 days:
-
-**Method 1: Fast-forward time in Hardhat**
-```bash
-# In Hardhat console
-await network.provider.send("evm_increaseTime", [30 * 24 * 60 * 60]) // 30 days
-await network.provider.send("evm_mine") // Mine a block
-```
-
-**Method 2: Manually finalize (if you're the owner)**
-```
-Debug Contracts → AllocationManager → finalizeEpoch()
-```
-
-### Check Yield Distribution
-
-After epoch finalization:
-```
-Debug Contracts → AllocationManager → getStudentAllocation(epochId, studentAddress)
-```
-
-This shows how much yield each student should receive.
-
-## Debugging Tips
-
-### Check Contract State
-
-**Vault Info:**
-```
-EndaomentVault:
-- totalAssets() → Total USDC deposited
-- totalSupply() → Total shares issued
-- balanceOf(address) → Your share balance
-- convertToAssets(shares) → Your USDC value
-```
-
-**Student Registry:**
-```
-StudentRegistry:
-- getActiveStudents() → All registered students
-- students(address) → Student details
-- getStudentCount() → Total students
-```
-
-**Allocation Manager:**
-```
-AllocationManager:
-- getCurrentEpoch() → Current epoch details
-- getUserVotes(epochId, userAddress) → Your total votes
-- getStudentVotes(epochId, studentAddress) → Votes for student
-```
-
-### Common Issues
-
-**Issue: "Insufficient allowance"**
-- Solution: Click "Approve" before depositing
-- The approve transaction must be confirmed first
-
-**Issue: "Below minimum deposit"**
-- Solution: Whale vaults need 1000+ USDC, retail needs 10+ USDC
-- Check vault's `minDeposit()` value
-
-**Issue: "No USDC balance"**
-- Solution: Use faucet() function in MockUSDC contract
-- Or check Debug Contracts to verify your balance
-
-**Issue: "Transaction failed"**
-- Check Terminal 1 (yarn chain) for error messages
-- Common causes:
-  - Insufficient gas
-  - Contract revert (check require statements)
-  - Wrong function arguments
-
-### View Transaction History
-
-**On Frontend:**
-- Dashboard page shows your deposit/withdrawal history
-- Uses `useScaffoldEventHistory` to fetch past events
-
-**On Debug Contracts:**
-- Click "Events" tab on any contract
-- See all emitted events with parameters
-
-## Testing Scenarios
-
-### Scenario 1: Single Whale, Multiple Students
-1. Whale creates vault with 5000 USDC
-2. Whale allocates: 50 points to Alice, 30 to Bob, 20 to Carol
-3. Fast-forward 30 days
-4. Finalize epoch
-5. Check student allocations: Alice gets 50%, Bob 30%, Carol 20% of student yield
-
-### Scenario 2: Multiple Donors, One Student
-1. Whale deposits 2000 USDC
-2. Retail1 deposits 100 USDC
-3. Retail2 deposits 50 USDC
-4. All allocate 100% votes to Alice
-5. Alice should get 75% of total yield from all three
-
-### Scenario 3: Mixed Allocations
-1. Whale deposits 3000 USDC, allocates: 70 Alice, 30 Bob
-2. Retail deposits 200 USDC, allocates: 50 Alice, 50 Bob
-3. Fast-forward and finalize
-4. Check: Alice and Bob get weighted average based on donor deposits
-
-## Next Steps After Testing
-
-Once you've verified all flows work:
-
-1. **Fix any bugs you find** - note them down
-2. **Test edge cases**:
-   - Zero allocations
-   - Partial allocations (not adding to 100)
-   - Multiple epochs
-3. **Deploy to testnet** (Epic 5):
-   - Base Sepolia
-   - Real testnet USDC
-   - Public testing
-
-## Quick Test Commands
-
-```bash
-# Start everything
-yarn chain          # Terminal 1
-yarn deploy --reset # Terminal 2 (in packages/hardhat)
-yarn start          # Terminal 3
-
-# Get test funds
-# Go to Debug Contracts → MockUSDC → faucet() → Send
-
-# Test whale flow
-# Go to /vault/create → deposit 1000 USDC
-
-# Test retail flow
-# Go to / → join existing vault → deposit 50 USDC
-
-# Test student flow
-# Go to /student/create → register as student
-
-# Test allocation
-# Go to /allocate → distribute 100 points → submit
-```
-
-## Helpful Links
-
-- Homepage (Marketplace): http://localhost:3000
-- Create Vault: http://localhost:3000/vault/create
-- Allocate Votes: http://localhost:3000/allocate
-- Dashboard: http://localhost:3000/dashboard
-- Student Registration: http://localhost:3000/student/create
-- Debug Contracts: http://localhost:3000/debug (built-in Scaffold-ETH page)
-
-## Video Walkthrough (To Record)
-
-Once testing is complete, we should record:
-1. 🐋 Whale creating vault and depositing
-2. 💰 Retail joining vault
-3. 🎓 Student registering
-4. 📊 Allocation voting
-5. 💰 Epoch finalization and yield distribution
+# 🧪 Guía de Testing - EnDAOment Scroll Hackathon
+
+## ✅ Compilación Exitosa
+
+Todos los contratos compilan correctamente:
+- ✅ MockAavePool.sol
+- ✅ LosslessVault.sol
+- ✅ YieldSplitter.sol
+- ✅ StudentSBT.sol
+- ✅ MyGovernor.sol
+- ✅ TimelockController (OpenZeppelin)
 
 ---
 
-**Need Help?** Check the terminal running `yarn chain` for transaction logs and error messages.
+## 🚀 Cómo Probar el Sistema
+
+### Opción 1: Testing Local (Recomendado para empezar)
+
+#### Paso 1: Iniciar Blockchain Local
+
+```bash
+# Terminal 1: Inicia Hardhat Network
+yarn chain
+```
+
+Esto iniciará una blockchain local en `http://localhost:8545` con cuentas pre-fundeadas.
+
+#### Paso 2: Desplegar Contratos
+
+```bash
+# Terminal 2: Desplegar todos los contratos
+yarn deploy
+```
+
+Esto desplegará los contratos en este orden:
+1. MockUSDC
+2. MockAavePool
+3. TimelockController
+4. YieldSplitter
+5. StudentSBT
+6. MyGovernor
+7. LosslessVault
+
+#### Paso 3: Verificar Despliegue
+
+Los contratos desplegados estarán en:
+- `packages/hardhat/deployments/localhost/`
+
+### Opción 2: Testing en Scroll Sepolia
+
+#### Paso 1: Configurar Variables de Entorno
+
+Crea `.env` en `packages/hardhat/`:
+
+```bash
+# .env
+DEPLOYER_PRIVATE_KEY_ENCRYPTED=tu_clave_encriptada
+UNIVERSITY_WALLET=0x... # Dirección del multisig (o deployer para test)
+ALCHEMY_API_KEY=tu_alchemy_key
+```
+
+#### Paso 2: Obtener ETH de Testnet
+
+1. Ve a: https://scroll.io/faucet
+2. Conecta tu wallet
+3. Solicita ETH de Scroll Sepolia
+
+#### Paso 3: Desplegar a Scroll Sepolia
+
+```bash
+yarn deploy --network scrollSepolia
+```
+
+#### Paso 4: Verificar en Block Explorer
+
+- **Scroll Sepolia Explorer**: https://sepolia.scrollscan.com/
+- Busca las direcciones de tus contratos desplegados
+
+---
+
+## 📝 Script de Testing Manual
+
+### 1. Setup Inicial
+
+```bash
+# Compilar
+yarn hardhat:compile
+
+# Iniciar blockchain local
+yarn chain  # Terminal 1
+
+# Desplegar
+yarn deploy  # Terminal 2
+```
+
+### 2. Testing con Hardhat Console
+
+```bash
+# Abre Hardhat console
+yarn hardhat console --network localhost
+```
+
+En la consola, puedes interactuar con los contratos:
+
+```javascript
+// Obtener contratos
+const MockUSDC = await ethers.getContract("MockUSDC");
+const MockAavePool = await ethers.getContract("MockAavePool");
+const LosslessVault = await ethers.getContract("LosslessVault");
+const StudentSBT = await ethers.getContract("StudentSBT");
+const YieldSplitter = await ethers.getContract("YieldSplitter");
+
+// Obtener cuentas
+const [deployer, donor, student1, student2] = await ethers.getSigners();
+
+// Verificar balances iniciales
+console.log("Deployer USDC:", await MockUSDC.balanceOf(deployer.address));
+```
+
+### 3. Flujo Completo de Demo
+
+#### A. Registrar Estudiantes y Darles SBT
+
+```javascript
+// En Hardhat console
+const StudentSBT = await ethers.getContract("StudentSBT");
+const [deployer, student1, student2] = await ethers.getSigners();
+
+// Mint SBT a estudiantes
+await StudentSBT.mint(student1.address);
+await StudentSBT.mint(student2.address);
+
+// Verificar
+console.log("Student1 tiene SBT:", await StudentSBT.hasSBT(student1.address));
+console.log("Voting power Student1:", await StudentSBT.getVotes(student1.address));
+```
+
+#### B. Donante Deposita USDC al Vault
+
+```javascript
+const MockUSDC = await ethers.getContract("MockUSDC");
+const LosslessVault = await ethers.getContract("LosslessVault");
+const [deployer, donor] = await ethers.getSigners();
+
+// Aprobar vault para gastar USDC
+const depositAmount = ethers.parseUnits("1000", 6); // 1000 USDC
+await MockUSDC.approve(await LosslessVault.getAddress(), depositAmount);
+
+// Depositar
+await LosslessVault.deposit(depositAmount, donor.address);
+
+// Verificar
+console.log("Vault shares:", await LosslessVault.balanceOf(donor.address));
+console.log("Total assets:", await LosslessVault.totalAssets());
+```
+
+#### C. Generar Yield (Demo)
+
+```javascript
+const MockAavePool = await ethers.getContract("MockAavePool");
+
+// Generar yield instantáneamente (5% = 50 USDC)
+const yieldAmount = ethers.parseUnits("50", 6);
+await MockAavePool.adminAddYield(yieldAmount);
+
+// Verificar yield disponible
+console.log("Yield disponible:", await MockAavePool.getAvailableYield());
+```
+
+#### D. Harvest Yield y Split
+
+```javascript
+const LosslessVault = await ethers.getContract("LosslessVault");
+const YieldSplitter = await ethers.getContract("YieldSplitter");
+const MockUSDC = await ethers.getContract("MockUSDC");
+const TimelockController = await ethers.getContract("TimelockController");
+
+// Harvest yield (envía al splitter)
+await LosslessVault.harvestYield();
+
+// Splitter divide automáticamente 50/50
+await YieldSplitter.splitYield();
+
+// Verificar distribución
+const universityWallet = await YieldSplitter.universityWallet();
+const timelockAddress = await TimelockController.getAddress();
+
+console.log("University balance:", await MockUSDC.balanceOf(universityWallet));
+console.log("DAO Treasury balance:", await MockUSDC.balanceOf(timelockAddress));
+```
+
+#### E. Testing Governance (Opcional)
+
+```javascript
+const MyGovernor = await ethers.getContract("MyGovernor");
+const StudentSBT = await ethers.getContract("StudentSBT");
+const [deployer, student1] = await ethers.getSigners();
+
+// Crear una propuesta (ejemplo: transferir USDC del Timelock)
+const TimelockController = await ethers.getContract("TimelockController");
+const MockUSDC = await ethers.getContract("MockUSDC");
+
+// Preparar calldata para transferir USDC
+const targets = [await MockUSDC.getAddress()];
+const values = [0];
+const calldatas = [
+  MockUSDC.interface.encodeFunctionData("transfer", [
+    student1.address,
+    ethers.parseUnits("10", 6)
+  ])
+];
+const description = "Transfer 10 USDC to student1";
+
+// Proponer (solo si tienes SBT)
+const proposalTx = await MyGovernor.propose(targets, values, calldatas, description);
+const receipt = await proposalTx.wait();
+const proposalId = receipt.logs[0].args.proposalId;
+
+console.log("Proposal ID:", proposalId);
+
+// Votar (Student1 vota a favor)
+await MyGovernor.connect(student1).castVote(proposalId, 1); // 1 = For
+
+// Esperar que termine el voting period (150 blocks ≈ 5 min en local)
+// Luego la propuesta pasa a Timelock
+```
+
+---
+
+## 🧪 Tests Automatizados
+
+### Crear Test Básico
+
+Crea `packages/hardhat/test/LosslessVault.test.ts`:
+
+```typescript
+import { expect } from "chai";
+import { ethers } from "hardhat";
+
+describe("LosslessVault", function () {
+  let mockUSDC: any;
+  let mockAavePool: any;
+  let yieldSplitter: any;
+  let losslessVault: any;
+  let deployer: any;
+  let donor: any;
+
+  beforeEach(async function () {
+    [deployer, donor] = await ethers.getSigners();
+
+    // Deploy MockUSDC
+    const MockUSDC = await ethers.getContractFactory("MockUSDC");
+    mockUSDC = await MockUSDC.deploy();
+
+    // Deploy MockAavePool
+    const MockAavePool = await ethers.getContractFactory("MockAavePool");
+    mockAavePool = await MockAavePool.deploy(await mockUSDC.getAddress());
+    await mockUSDC.addMinter(await mockAavePool.getAddress());
+
+    // Deploy YieldSplitter (necesita TimelockController)
+    // ... (completa según tus necesidades)
+
+    // Deploy LosslessVault
+    const LosslessVault = await ethers.getContractFactory("LosslessVault");
+    losslessVault = await LosslessVault.deploy(
+      await mockUSDC.getAddress(),
+      "Test Vault",
+      "TV",
+      await mockAavePool.getAddress(),
+      await yieldSplitter.getAddress()
+    );
+  });
+
+  it("Should deposit and send principal to MockAavePool", async function () {
+    const depositAmount = ethers.parseUnits("1000", 6);
+    await mockUSDC.approve(await losslessVault.getAddress(), depositAmount);
+    await losslessVault.deposit(depositAmount, donor.address);
+
+    const poolBalance = await mockAavePool.getUserSupply(await losslessVault.getAddress());
+    expect(poolBalance).to.equal(depositAmount);
+  });
+
+  it("Should harvest yield and split 50/50", async function () {
+    // ... (completa el test)
+  });
+});
+```
+
+### Ejecutar Tests
+
+```bash
+yarn test
+```
+
+---
+
+## 🔍 Verificación de Contratos en Scroll Sepolia
+
+Después de desplegar, verifica los contratos:
+
+```bash
+# Verificar un contrato
+yarn hardhat verify --network scrollSepolia <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
+
+# Ejemplo: Verificar MockAavePool
+yarn hardhat verify --network scrollSepolia \
+  0x... \
+  "0x..." # Dirección de MockUSDC
+```
+
+---
+
+## 📊 Checklist de Testing
+
+### Funcionalidad Básica
+- [ ] MockUSDC se despliega correctamente
+- [ ] MockAavePool acepta deposits
+- [ ] MockAavePool genera yield con `adminAddYield()`
+- [ ] LosslessVault deposita principal en MockAavePool
+- [ ] LosslessVault harvest yield correctamente
+- [ ] YieldSplitter divide 50/50 correctamente
+
+### Governance
+- [ ] StudentSBT se puede mint a estudiantes
+- [ ] StudentSBT es no-transferible (Soulbound)
+- [ ] MyGovernor acepta propuestas
+- [ ] Estudiantes pueden votar con su SBT
+- [ ] Propuestas pasan a Timelock después de votación
+- [ ] UniversityWallet puede vetar propuestas
+
+### Edge Cases
+- [ ] No se puede depositar 0 USDC
+- [ ] No se puede harvest sin yield
+- [ ] No se puede transferir SBT
+- [ ] No se puede votar sin SBT
+
+---
+
+## 🐛 Troubleshooting
+
+### Error: "Insufficient funds"
+- Asegúrate de tener ETH suficiente para gas
+- En localhost, las cuentas vienen pre-fundeadas
+
+### Error: "Contract not deployed"
+- Verifica que `yarn deploy` se ejecutó correctamente
+- Revisa `deployments/localhost/` para direcciones
+
+### Error: "Nonce too high"
+- Resetea la blockchain local: `yarn chain` (nuevo terminal)
+
+### Error: "Transaction reverted"
+- Revisa los logs de Hardhat para el motivo
+- Verifica que tienes permisos (owner, minter, etc.)
+
+---
+
+## 📚 Recursos
+
+- **Hardhat Docs**: https://hardhat.org/docs
+- **OpenZeppelin Contracts**: https://docs.openzeppelin.com/contracts
+- **Scroll Docs**: https://docs.scroll.io
+- **Scroll Sepolia Explorer**: https://sepolia.scrollscan.com
+
+---
+
+## 🎬 Demo Script Completo
+
+Para una demo rápida, ejecuta estos comandos en Hardhat console:
+
+```javascript
+// 1. Setup
+const MockUSDC = await ethers.getContract("MockUSDC");
+const MockAavePool = await ethers.getContract("MockAavePool");
+const LosslessVault = await ethers.getContract("LosslessVault");
+const YieldSplitter = await ethers.getContract("YieldSplitter");
+const StudentSBT = await ethers.getContract("StudentSBT");
+const [deployer, donor, student1] = await ethers.getSigners();
+
+// 2. Registrar estudiante
+await StudentSBT.mint(student1.address);
+console.log("✅ Estudiante registrado");
+
+// 3. Donante deposita
+await MockUSDC.approve(await LosslessVault.getAddress(), ethers.parseUnits("1000", 6));
+await LosslessVault.deposit(ethers.parseUnits("1000", 6), donor.address);
+console.log("✅ Depósito realizado");
+
+// 4. Generar yield
+await MockAavePool.adminAddYield(ethers.parseUnits("50", 6));
+console.log("✅ Yield generado");
+
+// 5. Harvest y split
+await LosslessVault.harvestYield();
+await YieldSplitter.splitYield();
+console.log("✅ Yield distribuido 50/50");
+
+// 6. Verificar
+const university = await YieldSplitter.universityWallet();
+const dao = await YieldSplitter.timelockController();
+console.log("University:", await MockUSDC.balanceOf(university));
+console.log("DAO:", await MockUSDC.balanceOf(dao));
+```
+
+---
+
+**¡Listo para probar! 🚀**

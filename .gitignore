@@ -21,3 +21,26 @@ node_modules
 
 # cli
 dist
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+packages/hardhat/.env
+packages/nextjs/.env.local
+
+# Hardhat
+packages/hardhat/cache
+packages/hardhat/artifacts
+packages/hardhat/deployments/localhost
+packages/hardhat/deployments/hardhat
+
+# Next.js
+packages/nextjs/.next
+packages/nextjs/out
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
