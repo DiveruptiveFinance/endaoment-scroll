@@ -63,7 +63,7 @@ export default function UploadDocumentPage() {
             <CheckCircle2 className="w-16 h-16 text-[#5CE27F] mx-auto mb-4" strokeWidth={2} />
             <h2 className="text-[28px] font-bold text-[#0A0F1C] mb-4">Document Uploaded Successfully!</h2>
             <p className="text-[16px] text-[#1A1A1A]/70 mb-6">
-              Your document is being reviewed. You'll receive a score once it's approved.
+              Your document is being reviewed. You&apos;ll receive a score once it&apos;s approved.
             </p>
             <Link href="/student/dashboard?tab=documents">
               <PrimaryButton size="lg">View Documents</PrimaryButton>

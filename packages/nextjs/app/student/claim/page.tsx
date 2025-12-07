@@ -7,7 +7,7 @@ import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getFundingClaim } from "~~/data/mockStudentFlow";
 import { getFundingProgress, getStudentById } from "~~/data/students";
-import { FundingClaim } from "~~/types/student-flow";
+// import { FundingClaim } from "~~/types/student-flow";
 
 export default function ClaimFundingPage() {
   const { address } = useAccount();
@@ -104,7 +104,7 @@ export default function ClaimFundingPage() {
           <div className="bg-white rounded-[6px] p-12 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] text-center">
             <DollarSign className="w-16 h-16 text-[#1A1A1A]/30 mx-auto mb-4" strokeWidth={2} />
             <h2 className="text-[28px] font-bold text-[#0A0F1C] mb-4">No Funding Available</h2>
-            <p className="text-[16px] text-[#1A1A1A]/70 mb-6">You don't have any approved funding to claim yet</p>
+            <p className="text-[16px] text-[#1A1A1A]/70 mb-6">You don&apos;t have any approved funding to claim yet</p>
             <Link href="/student/dashboard">
               <PrimaryButton size="lg">Back to Dashboard</PrimaryButton>
             </Link>

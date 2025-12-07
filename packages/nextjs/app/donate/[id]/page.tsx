@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
-import { TOKENS, UI_CONFIG } from "~~/data/constants";
+import { TOKENS } from "~~/data/constants";
 import { getFundingProgress, getStudentById } from "~~/data/students";
 
 export default function DonatePage() {

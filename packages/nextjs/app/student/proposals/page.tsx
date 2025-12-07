@@ -6,7 +6,7 @@ import { Award, CheckCircle2, Clock, TrendingUp, Vote } from "lucide-react";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getAllProposals, getStudentScore, getStudentVotes } from "~~/data/mockStudentFlow";
-import { Proposal, StudentVote } from "~~/types/student-flow";
+import { StudentVote } from "~~/types/student-flow";
 
 export default function ProposalsPage() {
   const { address } = useAccount();
