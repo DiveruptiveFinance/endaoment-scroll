@@ -27,7 +27,7 @@
     "daisyui": "5.0.9",
     "kubo-rpc-client": "~5.0.2",
     "lucide-react": "^0.553.0",
-    "next": "~15.2.3",
+    "next": "latest",
     "next-nprogress-bar": "~2.3.13",
     "next-themes": "~0.3.0",
     "qrcode.react": "~4.0.1",
