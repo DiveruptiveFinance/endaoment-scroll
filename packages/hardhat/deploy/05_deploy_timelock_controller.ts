@@ -42,28 +42,38 @@ const deployTimelockController: DeployFunction = async function (hre: HardhatRun
   const artifact = await hre.artifacts.readArtifact("TimelockController");
   const deployTx = timelockContract.deploymentTransaction();
   const receipt = deployTx ? await deployTx.wait() : null;
-  await hre.deployments.save("TimelockController", {
+  
+  // Save using save() method which doesn't validate args
+  const deploymentData: any = {
     address: timelockAddress,
     abi: artifact.abi,
-    args: [TIMELOCK_DELAY, proposers, executors, cancellers],
-    receipt: receipt ? {
+  };
+  
+  if (receipt) {
+    deploymentData.receipt = {
       to: receipt.to,
       from: receipt.from,
       contractAddress: receipt.contractAddress,
       transactionIndex: receipt.index,
-      gasUsed: receipt.gasUsed,
+      gasUsed: receipt.gasUsed.toString(),
       logsBloom: receipt.logsBloom,
       blockHash: receipt.blockHash,
       transactionHash: receipt.hash,
-      logs: receipt.logs,
+      logs: receipt.logs.map((log: any) => ({
+        address: log.address,
+        topics: log.topics,
+        data: log.data,
+      })),
       blockNumber: receipt.blockNumber,
       confirmations: receipt.confirmations,
-      cumulativeGasUsed: receipt.cumulativeGasUsed,
-      effectiveGasPrice: receipt.gasPrice,
+      cumulativeGasUsed: receipt.cumulativeGasUsed.toString(),
+      effectiveGasPrice: receipt.gasPrice?.toString(),
       status: receipt.status,
       type: receipt.type,
-    } : undefined,
-  });
+    };
+  }
+  
+  await hre.deployments.save("TimelockController", deploymentData);
 
   console.log("⏰ TimelockController deployed to:", timelockAddress);
 
