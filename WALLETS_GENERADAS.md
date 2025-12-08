@@ -55,3 +55,4 @@ const unamWallet = new Wallet("0x6e0c97538bcc3e9b1ba9966c82413510e1bba85d3402b99
 - Se configurarán en YieldSplitter para recibir el 50% del yield
 - Para producción, usar wallets multisig reales
 
+

@@ -154,3 +154,4 @@ packages/nextjs/public/universities/
 
 ¿Quieres que implemente el mínimo viable ahora para testear en Vercel?
 
+

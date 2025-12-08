@@ -446,3 +446,4 @@ const [donationState, setDonationState] = useState<{
 
 ¿Procedo con la generación de wallets y guardado de logos, o prefieres hacerlo tú?
 
+

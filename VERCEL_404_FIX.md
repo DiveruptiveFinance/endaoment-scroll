@@ -90,3 +90,4 @@ packages/nextjs/app/
 3. **Client Components**: Usan `"use client"` al inicio del archivo
 4. **No usar NextPage**: Es solo para Pages Router, no App Router
 
+

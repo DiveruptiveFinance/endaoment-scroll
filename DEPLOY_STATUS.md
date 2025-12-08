@@ -39,3 +39,4 @@ El archivo `.env` con tu clave privada está en `.gitignore` y NO se subirá a G
 
 **El frontend ya está listo y desplegado en Vercel. Solo falta completar el deploy de contratos cuando tengas tiempo.**
 
+
