@@ -15,8 +15,6 @@ const nextConfig: NextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
-  // Turbopack config (empty to silence Next.js 16 warning)
-  turbopack: {},
 };
 
 const isIpfs = process.env.NEXT_PUBLIC_IPFS_BUILD === "true";

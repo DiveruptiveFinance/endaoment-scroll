@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getUniversityById } from "~~/data/universities";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { formatUSDC, formatUSDCWithCommas, parseUSDC, validateDonation } from "~~/utils/format";
+import { formatUSDCWithCommas, parseUSDC, validateDonation } from "~~/utils/format";
 import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
 export const dynamic = "force-dynamic";
