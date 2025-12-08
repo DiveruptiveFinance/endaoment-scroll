@@ -40,11 +40,29 @@ const deployTimelockController: DeployFunction = async function (hre: HardhatRun
 
   // Save deployment info manually for hardhat-deploy
   const artifact = await hre.artifacts.readArtifact("TimelockController");
+  const deployTx = timelockContract.deploymentTransaction();
+  const receipt = deployTx ? await deployTx.wait() : null;
   await hre.deployments.save("TimelockController", {
     address: timelockAddress,
     abi: artifact.abi,
     args: [TIMELOCK_DELAY, proposers, executors, cancellers],
-    receipt: await timelockContract.deploymentTransaction()?.wait(),
+    receipt: receipt ? {
+      to: receipt.to,
+      from: receipt.from,
+      contractAddress: receipt.contractAddress,
+      transactionIndex: receipt.index,
+      gasUsed: receipt.gasUsed,
+      logsBloom: receipt.logsBloom,
+      blockHash: receipt.blockHash,
+      transactionHash: receipt.hash,
+      logs: receipt.logs,
+      blockNumber: receipt.blockNumber,
+      confirmations: receipt.confirmations,
+      cumulativeGasUsed: receipt.cumulativeGasUsed,
+      effectiveGasPrice: receipt.gasPrice,
+      status: receipt.status,
+      type: receipt.type,
+    } : undefined,
   });
 
   console.log("⏰ TimelockController deployed to:", timelockAddress);
