@@ -35,10 +35,21 @@ const deployEndaomentVault: DeployFunction = async function (hre: HardhatRuntime
   console.log("🏦 EndaomentVault deployed to:", vaultAddress);
 
   // Transfer vault ownership to AllocationManager so it can claim yield
-  console.log("🔑 Transferring vault ownership to AllocationManager...");
-  const transferTx = await vault.transferOwnership(await allocationManager.getAddress());
-  await transferTx.wait();
-  console.log("✅ Vault ownership transferred");
+  // Skip if already transferred
+  const currentOwner = await vault.owner();
+  const allocationManagerAddress = await allocationManager.getAddress();
+  if (currentOwner.toLowerCase() !== allocationManagerAddress.toLowerCase()) {
+    console.log("🔑 Transferring vault ownership to AllocationManager...");
+    try {
+      const transferTx = await vault.transferOwnership(allocationManagerAddress);
+      await transferTx.wait();
+      console.log("✅ Vault ownership transferred");
+    } catch (error: any) {
+      console.log("⚠️  Ownership transfer failed (may already be transferred):", error.message);
+    }
+  } else {
+    console.log("✅ Vault ownership already transferred");
+  }
 
   // Register vault with AllocationManager
   console.log("📋 Registering vault with AllocationManager...");

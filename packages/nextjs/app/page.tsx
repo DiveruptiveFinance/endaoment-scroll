@@ -133,14 +133,14 @@ export default function Home() {
                 </Link>
               ) : (
                 <>
-                  <Link href="/fund/donate">
+                  <Link href="/fund/universities">
                     <PrimaryButton size="lg">Donar</PrimaryButton>
                   </Link>
-                  <a href="#students-section">
+                  <Link href="/university/register">
                     <PrimaryButton size="lg" variant="secondary">
-                      Browse Students
+                      University
                     </PrimaryButton>
-                  </a>
+                  </Link>
                 </>
               )}
             </div>
