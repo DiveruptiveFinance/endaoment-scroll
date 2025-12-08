@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Box, CheckSquare, GraduationCap, Heart, TrendingUp, User } from "lucide-react";
-import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { StudentCard } from "~~/components/miniapp/StudentCard";
 import { Logo } from "~~/components/ui/Logo";
@@ -14,7 +13,7 @@ import { StatsCard } from "~~/components/ui/StatsCard";
 import { PLATFORM_STATS } from "~~/data/constants";
 import { STUDENTS } from "~~/data/students";
 
-const Home: NextPage = () => {
+export default function Home() {
   const router = useRouter();
   const { address: connectedAddress, isConnected } = useAccount();
   const [userType, setUserType] = useState<"student" | "donor" | null>(null);
@@ -246,6 +245,4 @@ const Home: NextPage = () => {
       </section>
     </div>
   );
-};
-
-export default Home;
+}
