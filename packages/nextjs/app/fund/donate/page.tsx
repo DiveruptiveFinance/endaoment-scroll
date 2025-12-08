@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
@@ -11,7 +11,7 @@ import { TransactionState, getTransactionMessage, isLoadingState } from "~~/util
 
 export const dynamic = "force-dynamic";
 
-export default function DonatePage() {
+function DonateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { address } = useAccount();
@@ -100,7 +100,7 @@ export default function DonatePage() {
         args: [amountBigInt, address],
       });
 
-      setTxHash(tx);
+      setTxHash(tx || null);
       setTxState("success");
 
       // Redirect after 3 seconds
@@ -241,5 +241,13 @@ export default function DonatePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function DonatePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>}>
+      <DonateContent />
+    </Suspense>
   );
 }

@@ -65,3 +65,4 @@ export default deployDonationTracker;
 
 deployDonationTracker.tags = ["DonationTracker"];
 deployDonationTracker.dependencies = ["UniversityRegistry"];
+

@@ -32,21 +32,19 @@ const deployTimelockController: DeployFunction = async function (hre: HardhatRun
   // Canceller is University Wallet (has veto power)
   const cancellers: string[] = [UNIVERSITY_WALLET];
 
-  // Deploy using ethers directly to avoid hardhat-deploy array encoding issues
-  const TimelockControllerFactory = await hre.ethers.getContractFactory("TimelockController");
-  const timelockContract = await TimelockControllerFactory.deploy(TIMELOCK_DELAY, proposers, executors, cancellers);
-  await timelockContract.waitForDeployment();
-  const timelockAddress = await timelockContract.getAddress();
-
-  // Save deployment info manually
-  await hre.deployments.save("TimelockController", {
-    address: timelockAddress,
-    abi: TimelockControllerFactory.interface.format("json") as any,
+  // Deploy using hardhat-deploy with proper array handling
+  const deployment = await deploy("TimelockController", {
+    from: deployer,
+    args: [TIMELOCK_DELAY, proposers, executors, cancellers],
+    log: true,
+    autoMine: true,
   });
+
+  const timelockAddress = deployment.address;
 
   console.log("⏰ TimelockController deployed to:", timelockAddress);
 
-  const timelock = timelockContract;
+  const timelock = await hre.ethers.getContract<Contract>("TimelockController", deployer);
 
   // Verify roles
   const PROPOSER_ROLE = await timelock.PROPOSER_ROLE();

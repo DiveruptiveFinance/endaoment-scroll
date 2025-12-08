@@ -413,3 +413,4 @@ await writeContractAsync({
 4. **Escuchar eventos** para UI reactiva
 5. **Manejar errores** con mensajes específicos
 
+

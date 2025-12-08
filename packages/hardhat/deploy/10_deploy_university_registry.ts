@@ -77,3 +77,4 @@ const deployUniversityRegistry: DeployFunction = async function (hre: HardhatRun
 export default deployUniversityRegistry;
 
 deployUniversityRegistry.tags = ["UniversityRegistry"];
+

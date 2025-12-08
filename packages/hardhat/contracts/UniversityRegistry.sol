@@ -188,3 +188,4 @@ contract UniversityRegistry is Ownable {
         return activeIds;
     }
 }
+

@@ -129,3 +129,4 @@ contract DonationTracker is Ownable {
         return totalYieldDistributed[university];
     }
 }
+
