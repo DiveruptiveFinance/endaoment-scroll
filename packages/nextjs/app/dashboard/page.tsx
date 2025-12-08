@@ -26,11 +26,6 @@ export default function DashboardPage() {
     functionName: "getAvailableYield",
   });
 
-  const { data: totalAssets } = useScaffoldReadContract({
-    contractName: "LosslessVault",
-    functionName: "totalAssets",
-  });
-
   const { data: totalShares } = useScaffoldReadContract({
     contractName: "LosslessVault",
     functionName: "totalSupply",
@@ -50,18 +45,13 @@ export default function DashboardPage() {
     userShares && totalShares && Number(totalShares) > 0 ? (Number(userShares) / Number(totalShares)) * 100 : 0;
 
   // Calculate available yield (for donation)
-  const totalYieldAmount = availableYield ? Number(formatUnits(availableYield, 6)) : 0;
-
-  // User's share of their donor pool (proportional to their vault shares)
-  const userShareRatio =
-    userShares && totalShares && Number(totalShares) > 0 ? Number(userShares) / Number(totalShares) : 0;
-  const userPersonalYield = donorPoolYield * userShareRatio;
+  const availableYieldAmount = availableYield ? Number(formatUnits(availableYield, 6)) : 0;
 
   const userStats = {
     totalDonated: formattedAssets,
-    yieldGenerated: userPersonalYield,
+    yieldGenerated: 0, // Yield is donated, not kept by user
     studentsSupported: 0, // TODO: Read from allocations
-    lastEpochYield: userPersonalYield,
+    lastEpochYield: 0,
   };
 
   return (
@@ -97,8 +87,8 @@ export default function DashboardPage() {
               <div className="stats stats-vertical lg:stats-horizontal shadow">
                 <div className="stat">
                   <div className="stat-title">Vault</div>
-                  <div className="stat-value text-lg">{vaultName || "EndaomentVault"}</div>
-                  <div className="stat-desc">Aave USDC Strategy</div>
+                  <div className="stat-value text-lg">LosslessVault</div>
+                  <div className="stat-desc">MockAavePool Strategy</div>
                 </div>
                 <div className="stat">
                   <div className="stat-title">Your Position</div>
@@ -108,9 +98,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="stat">
-                  <div className="stat-title">Your Yield</div>
-                  <div className="stat-value text-secondary">${userPersonalYield.toFixed(2)}</div>
-                  <div className="stat-desc">{isWhale ? "Whale earns 10%" : "Retail earns 15%"} of vault yield</div>
+                  <div className="stat-title">Available Yield</div>
+                  <div className="stat-value text-secondary">${availableYieldAmount.toFixed(2)}</div>
+                  <div className="stat-desc">Yield to be donated (100% goes to education)</div>
                 </div>
               </div>
               <div className="card-actions justify-end mt-4">
@@ -131,9 +121,9 @@ export default function DashboardPage() {
           <div className="stat-desc">Principal deposited to vault</div>
         </div>
         <div className="stat">
-          <div className="stat-title">Your Yield Share</div>
-          <div className="stat-value text-secondary">${userStats.yieldGenerated.toFixed(2)}</div>
-          <div className="stat-desc">You earn {isWhale ? "10%" : "15%"} of vault yield</div>
+          <div className="stat-title">Available Yield</div>
+          <div className="stat-value text-secondary">${availableYieldAmount.toFixed(2)}</div>
+          <div className="stat-desc">100% of yield is donated to education</div>
         </div>
         <div className="stat">
           <div className="stat-title">Students Supported</div>

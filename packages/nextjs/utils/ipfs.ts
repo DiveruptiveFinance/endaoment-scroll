@@ -7,7 +7,12 @@
  * Upload file to IPFS (mock for MVP)
  * In production, integrate with Pinata, NFT.Storage, or similar
  */
-export async function uploadToIPFS(file: File): Promise<string> {
+export interface IpfsUploadResult {
+  hash: string; // CID of the uploaded content
+  url: string; // Gateway URL to view the content
+}
+
+export async function uploadFileToIpfs(file: File): Promise<IpfsUploadResult> {
   // TODO: Integrate with real IPFS service
   // For MVP, return a mock hash
   // In production, use:
@@ -18,8 +23,21 @@ export async function uploadToIPFS(file: File): Promise<string> {
   return new Promise(resolve => {
     // Mock: generate a fake IPFS hash
     const mockHash = `Qm${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
-    setTimeout(() => resolve(mockHash), 1000);
+    setTimeout(() => {
+      resolve({
+        hash: mockHash,
+        url: getIPFSURL(mockHash),
+      });
+    }, 1000);
   });
+}
+
+/**
+ * Upload file to IPFS (legacy function name for compatibility)
+ */
+export async function uploadToIPFS(file: File): Promise<string> {
+  const result = await uploadFileToIpfs(file);
+  return result.hash;
 }
 
 /**

@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { UNIVERSITIES } from "~~/data/universities";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { formatUSDCWithCommas, parseUSDC } from "~~/utils/format";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { uploadFileToIpfs } from "~~/utils/ipfs";
 import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
@@ -36,7 +35,7 @@ export default function StudentRegisterPage() {
     try {
       const result = await uploadFileToIpfs(file);
       setFormData({ ...formData, idDocument: file, idDocumentHash: result.hash });
-    } catch (err) {
+    } catch {
       setError("Failed to upload ID document");
     }
   };
