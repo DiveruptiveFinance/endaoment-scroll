@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +11,11 @@ import { getFundingClaim, getStudentDocuments, getStudentScore } from "~~/data/m
 import { getFundingProgress, getStudentById } from "~~/data/students";
 import { FundingClaim, StudentDocument, StudentScore } from "~~/types/student-flow";
 
-export default function StudentDashboardPage() {
+// Force dynamic rendering to avoid static pre-rendering issues with useSearchParams
+export const dynamic = "force-dynamic";
+
+// Component that uses useSearchParams - must be wrapped in Suspense
+function StudentDashboardContent() {
   const { address } = useAccount();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"overview" | "documents" | "funding" | "voting">("overview");
@@ -406,5 +410,20 @@ function VotingTab({ score }: { score: StudentScore | null }) {
         </Link>
       </div>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function StudentDashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white">
+        <div className="container mx-auto px-4 py-16 max-w-6xl">
+          <div className="text-center">Loading...</div>
+        </div>
+      </div>
+    }>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }
