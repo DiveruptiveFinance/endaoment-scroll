@@ -34,4 +34,3 @@ Based on the students in the database, you need the following student avatars:
 - If an image is missing, a fallback with the student's initial will be shown
 - Images should be optimized for web (compressed, appropriate size)
 - Images will be displayed as circular avatars in the UI
-

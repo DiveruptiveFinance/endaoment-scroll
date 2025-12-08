@@ -22,6 +22,9 @@ contract StudentRegistry is IStudentRegistry, Ownable {
     // AllocationManager address (can record funding)
     address public allocationManager;
 
+    // StudentSBT contract address (for auto-minting)
+    address public studentSBT;
+
     /**
      * @notice Initialize StudentRegistry
      */
@@ -34,6 +37,15 @@ contract StudentRegistry is IStudentRegistry, Ownable {
     function setAllocationManager(address _allocationManager) external onlyOwner {
         require(_allocationManager != address(0), "Invalid allocation manager address");
         allocationManager = _allocationManager;
+    }
+
+    /**
+     * @notice Set the StudentSBT contract address
+     * @param _studentSBT Address of StudentSBT contract
+     */
+    function setStudentSBT(address _studentSBT) external onlyOwner {
+        require(_studentSBT != address(0), "Invalid StudentSBT address");
+        studentSBT = _studentSBT;
     }
 
     /**
@@ -176,5 +188,62 @@ contract StudentRegistry is IStudentRegistry, Ownable {
      */
     function getStudentCount() external view returns (uint256) {
         return studentAddresses.length;
+    }
+
+    /**
+     * @notice Public function for students to register themselves
+     * @param name Student's full name
+     * @param university University or institution
+     * @param researchArea Field of research (can be faculty/career)
+     * @param studentId Student ID or enrollment number
+     * @param academicAchievements Number of academic achievements (0-10)
+     * @param sportsAchievements Number of sports achievements (0-10)
+     * @param studentAchievements Number of student achievements (0-10)
+     */
+    function registerStudent(
+        string calldata name,
+        string calldata university,
+        string calldata researchArea,
+        string calldata studentId,
+        uint256 academicAchievements,
+        uint256 sportsAchievements,
+        uint256 studentAchievements
+    ) external {
+        address studentAddress = msg.sender;
+        require(!isRegistered[studentAddress], "Student already registered");
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(bytes(university).length > 0, "University cannot be empty");
+        require(bytes(researchArea).length > 0, "Research area cannot be empty");
+        require(bytes(studentId).length > 0, "Student ID cannot be empty");
+        require(academicAchievements <= 10, "Academic achievements max 10");
+        require(sportsAchievements <= 10, "Sports achievements max 10");
+        require(studentAchievements <= 10, "Student achievements max 10");
+
+        students[studentAddress] = Student({
+            wallet: studentAddress,
+            name: name,
+            university: university,
+            researchArea: researchArea,
+            isActive: true,
+            totalReceived: 0,
+            addedAt: block.timestamp
+        });
+
+        studentAddresses.push(studentAddress);
+        isRegistered[studentAddress] = true;
+
+        emit StudentAdded(studentAddress, name, university);
+
+        // Auto-mint StudentSBT if contract is set
+        if (studentSBT != address(0)) {
+            // Call StudentSBT.mint() - this will revert if student already has SBT
+            (bool success, ) = studentSBT.call(
+                abi.encodeWithSignature("mint(address)", studentAddress)
+            );
+            // Don't revert if mint fails - student is still registered
+            if (!success) {
+                // Log but continue
+            }
+        }
     }
 }

@@ -3,14 +3,14 @@
 /* Base Design System - Institutional Minimalist Style */
 @theme {
   /* Base Colors */
-  --color-base-blue: #0052FF;
-  --color-base-dark: #0A0F1C;
-  --color-base-white: #FFFFFF;
-  --color-base-gray: #F2F4F7;
-  --color-base-gray-light: #F8FAFC;
-  --color-base-black: #1A1A1A;
-  --color-base-success: #5CE27F;
-  --color-base-error: #FF5B5B;
+  --color-base-blue: #0052ff;
+  --color-base-dark: #0a0f1c;
+  --color-base-white: #ffffff;
+  --color-base-gray: #f2f4f7;
+  --color-base-gray-light: #f8fafc;
+  --color-base-black: #1a1a1a;
+  --color-base-success: #5ce27f;
+  --color-base-error: #ff5b5b;
 
   /* Shadows - Minimal */
   --shadow-subtle: 0 2px 6px rgba(0, 0, 0, 0.05);
@@ -18,7 +18,7 @@
 
   /* Border Radius - Subtle */
   --radius-subtle: 6px;
-  
+
   /* Transitions */
   --transition-smooth: all 0.3s ease-in-out;
 }
@@ -31,32 +31,32 @@
   name: "light";
 
   /* Primary - Base Blue */
-  --color-primary: #0052FF;
-  --color-primary-content: #FFFFFF;
-  
+  --color-primary: #0052ff;
+  --color-primary-content: #ffffff;
+
   /* Secondary - Light Gray */
-  --color-secondary: #F2F4F7;
-  --color-secondary-content: #0A0F1C;
-  
+  --color-secondary: #f2f4f7;
+  --color-secondary-content: #0a0f1c;
+
   /* Accent - Base Blue (same as primary) */
-  --color-accent: #0052FF;
-  --color-accent-content: #FFFFFF;
-  
+  --color-accent: #0052ff;
+  --color-accent-content: #ffffff;
+
   /* Neutral - Dark Blue */
-  --color-neutral: #0A0F1C;
-  --color-neutral-content: #FFFFFF;
-  
+  --color-neutral: #0a0f1c;
+  --color-neutral-content: #ffffff;
+
   /* Base Colors */
-  --color-base-100: #FFFFFF;
-  --color-base-200: #F8FAFC;
-  --color-base-300: #F2F4F7;
-  --color-base-content: #1A1A1A;
-  
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc;
+  --color-base-300: #f2f4f7;
+  --color-base-content: #1a1a1a;
+
   /* Status Colors */
-  --color-info: #0052FF;
-  --color-success: #5CE27F;
-  --color-warning: #FFCF72;
-  --color-error: #FF5B5B;
+  --color-info: #0052ff;
+  --color-success: #5ce27f;
+  --color-warning: #ffcf72;
+  --color-error: #ff5b5b;
 
   /* Border Radius - Subtle */
   --radius-field: 6px;
@@ -76,7 +76,12 @@
   /* Typography - Inter or Satoshi */
   body {
     min-height: 100vh;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
     font-weight: 400;
     line-height: 1.3;
     color: var(--color-base-black);
@@ -143,7 +148,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #0040CC;
+  background-color: #0040cc;
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
 }
@@ -192,7 +197,7 @@
 }
 
 .link:hover {
-  color: #0040CC;
+  color: #0040cc;
   opacity: 1;
 }
 
@@ -211,7 +216,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #0052FF;
+  background: #0052ff;
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 6px rgba(0, 82, 255, 0.3);
@@ -227,7 +232,7 @@ input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #0052FF;
+  background: #0052ff;
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 6px rgba(0, 82, 255, 0.3);
@@ -243,7 +248,7 @@ input[type="range"]::-ms-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #0052FF;
+  background: #0052ff;
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 6px rgba(0, 82, 255, 0.3);

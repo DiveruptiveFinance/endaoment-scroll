@@ -126,10 +126,20 @@ export default function Home() {
                 <Link href="/student/dashboard">
                   <PrimaryButton size="lg">Go to Student Dashboard</PrimaryButton>
                 </Link>
+              ) : userType === "donor" ||
+                (typeof window !== "undefined" && localStorage.getItem("userType") === "donor") ? (
+                <Link href="/donor/dashboard">
+                  <PrimaryButton size="lg">Go to Donor Dashboard</PrimaryButton>
+                </Link>
               ) : (
-                <a href="#students-section">
-                  <PrimaryButton size="lg">Browse Students</PrimaryButton>
-                </a>
+                <>
+                  <Link href="/fund/donate">
+                    <PrimaryButton size="lg">Donar</PrimaryButton>
+                  </Link>
+                  <a href="#students-section">
+                    <PrimaryButton size="lg" variant="secondary">Browse Students</PrimaryButton>
+                  </a>
+                </>
               )}
             </div>
           )}

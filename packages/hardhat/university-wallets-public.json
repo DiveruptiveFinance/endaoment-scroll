@@ -1,0 +1,32 @@
+[
+  {
+    "name": "UNAM",
+    "id": "unam",
+    "address": "0x791DC44d843870dEE8832bF9801F0DCbdb1D0618"
+  },
+  {
+    "name": "IBERO",
+    "id": "ibero",
+    "address": "0x904A9868954044925758D4a483Ae126BE884e934"
+  },
+  {
+    "name": "BUAP",
+    "id": "buap",
+    "address": "0x6c40b6c7835401BA249b36e4F0eFb62B8ABfc310"
+  },
+  {
+    "name": "UDLAP",
+    "id": "udlap",
+    "address": "0x0699A33d04D1400a1922Ae80D6e3306E4932063b"
+  },
+  {
+    "name": "ANAHUAC",
+    "id": "anahuac",
+    "address": "0x5B2cE48D1d74E6d2040b40246501B9d601fb4b82"
+  },
+  {
+    "name": "TEC",
+    "id": "tec",
+    "address": "0x357B924B9f549B4C6a9DB212a24E615d175E336D"
+  }
+]

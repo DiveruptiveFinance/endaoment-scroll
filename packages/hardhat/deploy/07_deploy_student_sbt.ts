@@ -31,6 +31,9 @@ const deployStudentSBT: DeployFunction = async function (hre: HardhatRuntimeEnvi
   console.log(`   Symbol:  SBT`);
   console.log(`   Type:    Soulbound (Non-transferable)`);
   console.log(`   Owner:   ${deployer} (can add authorized minters)`);
+
+  // Grant StudentRegistry as authorized minter (will be set after StudentRegistry is deployed)
+  console.log(`\n⚠️  Note: Set StudentRegistry as authorized minter after deployment`);
 };
 
 export default deployStudentSBT;

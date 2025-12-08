@@ -10,40 +10,35 @@ export default function DashboardPage() {
 
   // Read user's vault shares and value
   const { data: userShares } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
+    contractName: "LosslessVault",
     functionName: "balanceOf",
     args: [address],
   });
 
   const { data: userAssets } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
+    contractName: "LosslessVault",
     functionName: "convertToAssets",
     args: [userShares || 0n],
   });
 
-  const { data: totalVaultYield } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
-    functionName: "getAccruedYield",
+  const { data: availableYield } = useScaffoldReadContract({
+    contractName: "LosslessVault",
+    functionName: "getAvailableYield",
   });
 
-  const { data: whaleAddress } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
-    functionName: "whale",
-  });
-
-  const { data: vaultName } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
-    functionName: "vaultName",
+  const { data: totalAssets } = useScaffoldReadContract({
+    contractName: "LosslessVault",
+    functionName: "totalAssets",
   });
 
   const { data: totalShares } = useScaffoldReadContract({
-    contractName: "EndaomentVault",
+    contractName: "LosslessVault",
     functionName: "totalSupply",
   });
 
   // Read deposit events for transaction history
   const { data: depositEvents, isLoading: eventsLoading } = useScaffoldEventHistory({
-    contractName: "EndaomentVault",
+    contractName: "LosslessVault",
     eventName: "Deposit",
     fromBlock: 0n,
   });
@@ -54,11 +49,8 @@ export default function DashboardPage() {
   const votingPower =
     userShares && totalShares && Number(totalShares) > 0 ? (Number(userShares) / Number(totalShares)) * 100 : 0;
 
-  // Calculate user's personal yield based on donor type
-  const totalYieldAmount = totalVaultYield ? Number(formatUnits(totalVaultYield, 6)) : 0;
-  const isWhale = whaleAddress?.toLowerCase() === address?.toLowerCase();
-  const userDonorShare = isWhale ? 0.1 : 0.15; // 10% for whale, 15% for retail
-  const donorPoolYield = totalYieldAmount * userDonorShare;
+  // Calculate available yield (for donation)
+  const totalYieldAmount = availableYield ? Number(formatUnits(availableYield, 6)) : 0;
 
   // User's share of their donor pool (proportional to their vault shares)
   const userShareRatio =

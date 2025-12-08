@@ -16,7 +16,7 @@ export default function CreateVaultPage() {
   const [txStatus, setTxStatus] = useState<"idle" | "approving" | "depositing">("idle");
 
   // Get vault contract address dynamically
-  const { data: vaultInfo } = useDeployedContractInfo("EndaomentVault");
+  const { data: vaultInfo } = useDeployedContractInfo("LosslessVault");
   const vaultAddress = vaultInfo?.address;
 
   // Read user's USDC balance
@@ -34,7 +34,7 @@ export default function CreateVaultPage() {
   });
 
   const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
-  const { writeContractAsync: depositToVault } = useScaffoldWriteContract("EndaomentVault");
+  const { writeContractAsync: depositToVault } = useScaffoldWriteContract("LosslessVault");
 
   const handleSubmit = async () => {
     if (!address || !vaultAddress) return;
