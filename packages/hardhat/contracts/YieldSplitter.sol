@@ -41,11 +41,7 @@ contract YieldSplitter is Ownable, ReentrancyGuard {
      * @param _universityWallet Address of university multisig wallet
      * @param _timelockController Address of TimelockController (DAO treasury)
      */
-    constructor(
-        address _asset,
-        address _universityWallet,
-        address _timelockController
-    ) Ownable(msg.sender) {
+    constructor(address _asset, address _universityWallet, address _timelockController) Ownable(msg.sender) {
         require(_asset != address(0), "Invalid asset address");
         require(_universityWallet != address(0), "Invalid university wallet");
         require(_timelockController != address(0), "Invalid timelock controller");
@@ -73,13 +69,7 @@ contract YieldSplitter is Ownable, ReentrancyGuard {
         // Transfer to TimelockController (DAO Treasury)
         require(asset.transfer(timelockController, daoAmount), "DAO transfer failed");
 
-        emit YieldSplit(
-            balance,
-            universityAmount,
-            daoAmount,
-            universityWallet,
-            timelockController
-        );
+        emit YieldSplit(balance, universityAmount, daoAmount, universityWallet, timelockController);
     }
 
     /**
@@ -112,4 +102,3 @@ contract YieldSplitter is Ownable, ReentrancyGuard {
         return asset.balanceOf(address(this));
     }
 }
-

@@ -54,14 +54,7 @@ export function getTransactionMessage(state: TransactionState): string {
  * Check if state is a loading state
  */
 export function isLoadingState(state: TransactionState): boolean {
-  return [
-    "checking-allowance",
-    "approving",
-    "depositing",
-    "withdrawing",
-    "harvesting",
-    "splitting",
-  ].includes(state);
+  return ["checking-allowance", "approving", "depositing", "withdrawing", "harvesting", "splitting"].includes(state);
 }
 
 /**
@@ -70,4 +63,3 @@ export function isLoadingState(state: TransactionState): boolean {
 export function isFinalState(state: TransactionState): boolean {
   return state === "success" || state === "error";
 }
-

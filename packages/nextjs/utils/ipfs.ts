@@ -15,7 +15,7 @@ export async function uploadToIPFS(file: File): Promise<string> {
   // - NFT.Storage: https://nft.storage/
   // - Web3.Storage: https://web3.storage/
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // Mock: generate a fake IPFS hash
     const mockHash = `Qm${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
     setTimeout(() => resolve(mockHash), 1000);
@@ -51,4 +51,3 @@ export async function downloadFromIPFS(hash: string): Promise<Blob> {
   const response = await fetch(url);
   return response.blob();
 }
-

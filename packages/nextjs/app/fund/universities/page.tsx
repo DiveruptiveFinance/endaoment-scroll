@@ -1,7 +1,7 @@
 "use client";
 
-import { getAllActiveUniversities } from "~~/data/universities";
 import { UniversityCard } from "~~/components/fund/UniversityCard";
+import { getAllActiveUniversities } from "~~/data/universities";
 
 export default function UniversitiesPage() {
   const universities = getAllActiveUniversities();
@@ -20,7 +20,7 @@ export default function UniversitiesPage() {
         {/* Universities Grid */}
         {universities.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {universities.map((university) => (
+            {universities.map(university => (
               <UniversityCard key={university.id} university={university} />
             ))}
           </div>
@@ -33,4 +33,3 @@ export default function UniversitiesPage() {
     </div>
   );
 }
-

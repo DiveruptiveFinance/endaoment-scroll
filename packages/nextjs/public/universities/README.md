@@ -10,6 +10,7 @@ Place university logos here with the following naming convention:
 - `tec.png` or `tec.svg` - TEC de Monterrey
 
 ## Order (as displayed in UI):
+
 1. UNAM
 2. IBERO
 3. BUAP
@@ -18,6 +19,7 @@ Place university logos here with the following naming convention:
 6. TEC de Monterrey
 
 ## Usage in Code:
+
 ```typescript
 const universityLogos = {
   unam: "/universities/unam.png",

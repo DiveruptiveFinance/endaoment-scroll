@@ -44,4 +44,3 @@ export default deployMockAavePool;
 
 deployMockAavePool.tags = ["MockAavePool"];
 deployMockAavePool.dependencies = ["MockUSDC"];
-

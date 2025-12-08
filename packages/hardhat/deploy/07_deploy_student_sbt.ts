@@ -39,4 +39,3 @@ const deployStudentSBT: DeployFunction = async function (hre: HardhatRuntimeEnvi
 export default deployStudentSBT;
 
 deployStudentSBT.tags = ["StudentSBT"];
-

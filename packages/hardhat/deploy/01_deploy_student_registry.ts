@@ -76,9 +76,17 @@ const deployStudentRegistry: DeployFunction = async function (hre: HardhatRuntim
   ];
 
   for (const student of students) {
-    const tx = await registry.addStudent(student.address, student.name, student.university, student.research);
-    await tx.wait();
-    console.log(`  ✅ Added: ${student.name} (${student.university})`);
+    try {
+      const tx = await registry.addStudent(student.address, student.name, student.university, student.research);
+      await tx.wait();
+      console.log(`  ✅ Added: ${student.name} (${student.university})`);
+    } catch (error: any) {
+      if (error.message?.includes("already registered") || error.reason?.includes("already registered")) {
+        console.log(`  ⏭️  Skipped: ${student.name} (already registered)`);
+      } else {
+        console.log(`  ⚠️  Failed to add ${student.name}: ${error.message || error}`);
+      }
+    }
   }
 
   console.log(`\n🎓 Total students registered: ${students.length}`);

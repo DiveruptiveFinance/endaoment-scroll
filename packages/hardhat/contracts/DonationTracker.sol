@@ -21,16 +21,12 @@ contract DonationTracker is Ownable {
     event YieldDistributed(
         address indexed university,
         uint256 operationalAmount, // 50% to university wallet
-        uint256 daoAmount,         // 50% to TimelockController
+        uint256 daoAmount, // 50% to TimelockController
         uint256 timestamp,
         string universityName
     );
 
-    event UniversityRegistered(
-        address indexed universityWallet,
-        string universityName,
-        uint256 timestamp
-    );
+    event UniversityRegistered(address indexed universityWallet, string universityName, uint256 timestamp);
 
     // Mapping: university wallet => university name
     mapping(address => string) public universityNames;
@@ -73,11 +69,7 @@ contract DonationTracker is Ownable {
      * @param university Wallet address of the university
      * @param amount Amount donated
      */
-    function trackDonation(
-        address donor,
-        address university,
-        uint256 amount
-    ) external onlyOwner {
+    function trackDonation(address donor, address university, uint256 amount) external onlyOwner {
         require(donor != address(0), "Invalid donor address");
         require(university != address(0), "Invalid university address");
         require(amount > 0, "Amount must be greater than 0");
@@ -86,13 +78,7 @@ contract DonationTracker is Ownable {
         totalDonations[university] += amount;
         totalDonationsAll += amount;
 
-        emit DonationMade(
-            donor,
-            university,
-            amount,
-            block.timestamp,
-            universityNames[university]
-        );
+        emit DonationMade(donor, university, amount, block.timestamp, universityNames[university]);
     }
 
     /**
@@ -113,13 +99,7 @@ contract DonationTracker is Ownable {
         totalYieldDistributed[university] += (operationalAmount + daoAmount);
         totalYieldDistributedAll += (operationalAmount + daoAmount);
 
-        emit YieldDistributed(
-            university,
-            operationalAmount,
-            daoAmount,
-            block.timestamp,
-            universityNames[university]
-        );
+        emit YieldDistributed(university, operationalAmount, daoAmount, block.timestamp, universityNames[university]);
     }
 
     /**
@@ -149,4 +129,3 @@ contract DonationTracker is Ownable {
         return totalYieldDistributed[university];
     }
 }
-

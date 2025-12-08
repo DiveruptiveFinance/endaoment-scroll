@@ -237,9 +237,7 @@ contract StudentRegistry is IStudentRegistry, Ownable {
         // Auto-mint StudentSBT if contract is set
         if (studentSBT != address(0)) {
             // Call StudentSBT.mint() - this will revert if student already has SBT
-            (bool success, ) = studentSBT.call(
-                abi.encodeWithSignature("mint(address)", studentAddress)
-            );
+            (bool success, ) = studentSBT.call(abi.encodeWithSignature("mint(address)", studentAddress));
             // Don't revert if mint fails - student is still registered
             if (!success) {
                 // Log but continue

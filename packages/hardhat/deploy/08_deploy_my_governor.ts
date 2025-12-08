@@ -69,4 +69,3 @@ export default deployMyGovernor;
 
 deployMyGovernor.tags = ["MyGovernor"];
 deployMyGovernor.dependencies = ["StudentSBT", "TimelockController"];
-

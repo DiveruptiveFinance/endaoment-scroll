@@ -53,11 +53,13 @@ contract AllocationManager is Ownable {
     event EpochCreated(uint256 indexed epochId, uint256 startTime, uint256 endTime);
     event EpochFinalized(uint256 indexed epochId);
     event VotesAllocated(
-        uint256 indexed epochId, address indexed vault, address indexed voter, address[] students, uint256[] votes
+        uint256 indexed epochId,
+        address indexed vault,
+        address indexed voter,
+        address[] students,
+        uint256[] votes
     );
-    event YieldDistributed(
-        uint256 indexed epochId, address indexed vault, uint256 totalYield, uint256 studentShare
-    );
+    event YieldDistributed(uint256 indexed epochId, address indexed vault, uint256 totalYield, uint256 studentShare);
     event VaultRegistered(address indexed vault);
 
     /**

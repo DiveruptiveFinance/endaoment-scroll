@@ -1,15 +1,15 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount } from "wagmi";
-import { parseUSDC, formatUSDC, formatUSDCWithCommas, validateDonation } from "~~/utils/format";
-import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getUniversityById } from "~~/data/universities";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { formatUSDC, formatUSDCWithCommas, parseUSDC, validateDonation } from "~~/utils/format";
+import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
+
+export const dynamic = "force-dynamic";
 
 export default function DonatePage() {
   const router = useRouter();
@@ -164,7 +164,7 @@ export default function DonatePage() {
 
           {/* Quick Amount Buttons */}
           <div className="grid grid-cols-3 gap-3 mb-4">
-            {quickAmounts.map((value) => (
+            {quickAmounts.map(value => (
               <button
                 key={value}
                 onClick={() => handleQuickAmount(value)}
@@ -185,7 +185,7 @@ export default function DonatePage() {
             <input
               type="number"
               value={customAmount}
-              onChange={(e) => handleCustomAmount(e.target.value)}
+              onChange={e => handleCustomAmount(e.target.value)}
               placeholder="0.00"
               min="10"
               step="0.01"
@@ -243,4 +243,3 @@ export default function DonatePage() {
     </div>
   );
 }
-

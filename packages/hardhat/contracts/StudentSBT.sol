@@ -43,10 +43,7 @@ contract StudentSBT is ERC721, Ownable, ReentrancyGuard, IVotes {
     event StudentRegistered(address indexed student, uint256 indexed tokenId);
 
     modifier onlyAuthorizedMinter() {
-        require(
-            authorizedMinters[msg.sender] || msg.sender == owner(),
-            "Not authorized to mint"
-        );
+        require(authorizedMinters[msg.sender] || msg.sender == owner(), "Not authorized to mint");
         _;
     }
 
@@ -55,10 +52,7 @@ contract StudentSBT is ERC721, Ownable, ReentrancyGuard, IVotes {
      * @param name Token name
      * @param symbol Token symbol
      */
-    constructor(
-        string memory name,
-        string memory symbol
-    ) ERC721(name, symbol) Ownable(msg.sender) {
+    constructor(string memory name, string memory symbol) ERC721(name, symbol) Ownable(msg.sender) {
         _tokenIdCounter = 1; // Start from token ID 1
     }
 
@@ -236,7 +230,9 @@ contract StudentSBT is ERC721, Ownable, ReentrancyGuard, IVotes {
         if (pos > 0 && ckpts[pos - 1].fromBlock == block.number) {
             ckpts[pos - 1].votes = SafeCast.toUint224(newWeight);
         } else {
-            ckpts.push(Checkpoint({fromBlock: SafeCast.toUint32(block.number), votes: SafeCast.toUint224(newWeight)}));
+            ckpts.push(
+                Checkpoint({ fromBlock: SafeCast.toUint32(block.number), votes: SafeCast.toUint224(newWeight) })
+            );
         }
     }
 
@@ -271,4 +267,3 @@ contract StudentSBT is ERC721, Ownable, ReentrancyGuard, IVotes {
         return high == 0 ? 0 : ckpts[high - 1].votes;
     }
 }
-

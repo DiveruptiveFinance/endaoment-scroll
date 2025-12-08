@@ -102,9 +102,7 @@ contract MockAavePool is Ownable {
         // Try to mint to this contract
         // Note: This requires the asset to have a mint function
         // We'll handle this in the deployment script by granting mint permissions
-        (bool success, ) = address(asset).call(
-            abi.encodeWithSignature("mint(address,uint256)", address(this), amount)
-        );
+        (bool success, ) = address(asset).call(abi.encodeWithSignature("mint(address,uint256)", address(this), amount));
         require(success, "Yield mint failed - check asset mint permissions");
 
         accumulatedYield += amount;
@@ -148,4 +146,3 @@ contract MockAavePool is Ownable {
         return asset.balanceOf(address(this));
     }
 }
-

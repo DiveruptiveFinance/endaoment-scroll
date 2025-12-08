@@ -1,15 +1,15 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useAccount } from "wagmi";
-import { formatUSDC, formatUSDCWithCommas, calculateProjections, FIXED_APY } from "~~/utils/format";
-import { useScaffoldReadContract, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { FIXED_APY, calculateProjections, formatUSDC, formatUSDCWithCommas } from "~~/utils/format";
+
+export const dynamic = "force-dynamic";
 
 export default function DonorDashboardPage() {
   const { address } = useAccount();
@@ -53,7 +53,7 @@ export default function DonorDashboardPage() {
   const projections = calculateProjections(principalNumber, FIXED_APY);
 
   // Prepare chart data
-  const chartData = Object.values(projections).map((p) => ({
+  const chartData = Object.values(projections).map(p => ({
     period: p.period,
     yield: parseFloat(p.yield.toFixed(2)),
     total: parseFloat(p.total.toFixed(2)),
@@ -102,12 +102,8 @@ export default function DonorDashboardPage() {
             )}
           </div>
           <div className="flex-1">
-            <h1 className="text-[36px] font-bold text-[#0A0F1C] mb-2">
-              {profileName || "Donor Dashboard"}
-            </h1>
-            {profileDescription && (
-              <p className="text-[16px] text-[#1A1A1A]/70 mb-4">{profileDescription}</p>
-            )}
+            <h1 className="text-[36px] font-bold text-[#0A0F1C] mb-2">{profileName || "Donor Dashboard"}</h1>
+            {profileDescription && <p className="text-[16px] text-[#1A1A1A]/70 mb-4">{profileDescription}</p>}
             <Link href="/donor/profile">
               <button className="text-[14px] text-[#0052FF] hover:text-[#0040CC] transition-colors">
                 Edit Profile →
@@ -153,7 +149,7 @@ export default function DonorDashboardPage() {
             </LineChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-5 gap-4 mt-6">
-            {Object.values(projections).map((p) => (
+            {Object.values(projections).map(p => (
               <div key={p.period} className="text-center">
                 <div className="text-[12px] text-[#1A1A1A]/70 mb-1">{p.period}</div>
                 <div className="text-[16px] font-bold text-[#0052FF]">${p.yield.toFixed(2)}</div>
@@ -202,4 +198,3 @@ export default function DonorDashboardPage() {
     </div>
   );
 }
-

@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import { parseUSDC, formatUSDCWithCommas } from "~~/utils/format";
-import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { formatUSDCWithCommas, parseUSDC } from "~~/utils/format";
+import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
 export default function AdminYieldPage() {
   const { address } = useAccount();
@@ -107,21 +107,15 @@ export default function AdminYieldPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <div className="text-[14px] text-[#1A1A1A]/70 mb-2">Total Supply (Principal)</div>
-            <div className="text-[24px] font-bold text-[#0A0F1C]">
-              ${formatUSDCWithCommas(totalSupply || 0n)}
-            </div>
+            <div className="text-[24px] font-bold text-[#0A0F1C]">${formatUSDCWithCommas(totalSupply || 0n)}</div>
           </div>
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <div className="text-[14px] text-[#1A1A1A]/70 mb-2">Available Yield</div>
-            <div className="text-[24px] font-bold text-[#5CE27F]">
-              ${formatUSDCWithCommas(availableYield || 0n)}
-            </div>
+            <div className="text-[24px] font-bold text-[#5CE27F]">${formatUSDCWithCommas(availableYield || 0n)}</div>
           </div>
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <div className="text-[14px] text-[#1A1A1A]/70 mb-2">Total Assets</div>
-            <div className="text-[24px] font-bold text-[#0052FF]">
-              ${formatUSDCWithCommas(totalAssets || 0n)}
-            </div>
+            <div className="text-[24px] font-bold text-[#0052FF]">${formatUSDCWithCommas(totalAssets || 0n)}</div>
           </div>
         </div>
 
@@ -135,7 +129,7 @@ export default function AdminYieldPage() {
             <input
               type="number"
               value={yieldAmount}
-              onChange={(e) => setYieldAmount(e.target.value)}
+              onChange={e => setYieldAmount(e.target.value)}
               placeholder="1000"
               className="flex-1 px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
             />
@@ -151,7 +145,10 @@ export default function AdminYieldPage() {
           <p className="text-[14px] text-[#1A1A1A]/70 mb-4">
             Harvest available yield from MockAavePool and split it 50/50 between University and DAO.
           </p>
-          <PrimaryButton onClick={handleHarvestYield} disabled={isLoadingState(txState) || (availableYield || 0n) === 0n}>
+          <PrimaryButton
+            onClick={handleHarvestYield}
+            disabled={isLoadingState(txState) || (availableYield || 0n) === 0n}
+          >
             {isLoadingState(txState) ? getTransactionMessage(txState) : "Harvest & Split Yield"}
           </PrimaryButton>
         </div>
@@ -174,4 +171,3 @@ export default function AdminYieldPage() {
     </div>
   );
 }
-

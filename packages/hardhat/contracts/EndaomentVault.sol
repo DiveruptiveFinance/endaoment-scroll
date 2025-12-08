@@ -142,9 +142,7 @@ contract EndaomentVault is ERC4626, Ownable {
         IERC20(asset()).approve(address(this), yieldAmount);
 
         // Cast to interface that has mint function
-        (bool success,) = asset().call(
-            abi.encodeWithSignature("mint(address,uint256)", address(this), yieldAmount)
-        );
+        (bool success, ) = asset().call(abi.encodeWithSignature("mint(address,uint256)", address(this), yieldAmount));
         require(success, "Mint failed - vault not authorized");
 
         // Update yield tracking

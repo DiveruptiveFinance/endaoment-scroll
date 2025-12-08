@@ -137,7 +137,9 @@ export default function Home() {
                     <PrimaryButton size="lg">Donar</PrimaryButton>
                   </Link>
                   <a href="#students-section">
-                    <PrimaryButton size="lg" variant="secondary">Browse Students</PrimaryButton>
+                    <PrimaryButton size="lg" variant="secondary">
+                      Browse Students
+                    </PrimaryButton>
                   </a>
                 </>
               )}

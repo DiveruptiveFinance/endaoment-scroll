@@ -416,13 +416,15 @@ function VotingTab({ score }: { score: StudentScore | null }) {
 // Main component with Suspense boundary
 export default function StudentDashboardPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-16 max-w-6xl">
-          <div className="text-center">Loading...</div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white">
+          <div className="container mx-auto px-4 py-16 max-w-6xl">
+            <div className="text-center">Loading...</div>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <StudentDashboardContent />
     </Suspense>
   );

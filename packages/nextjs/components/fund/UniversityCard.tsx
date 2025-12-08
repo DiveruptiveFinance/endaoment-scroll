@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { formatUSDCWithCommas } from "~~/utils/format";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { University } from "~~/data/universities";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
+import { University } from "~~/data/universities";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { formatUSDCWithCommas } from "~~/utils/format";
 
 interface UniversityCardProps {
   university: University;
@@ -65,7 +65,8 @@ export function UniversityCard({ university }: UniversityCardProps) {
         <div className="flex justify-between items-center mb-2">
           <span className="text-[14px] font-semibold text-[#0A0F1C]">Capital Raised</span>
           <span className="text-[16px] font-bold text-[#0052FF]">
-            ${formatUSDCWithCommas(BigInt(Math.floor(capitalRaised * 1e6)))} / ${university.capitalGoal.toLocaleString()}
+            ${formatUSDCWithCommas(BigInt(Math.floor(capitalRaised * 1e6)))} / $
+            {university.capitalGoal.toLocaleString()}
           </span>
         </div>
         <div className="w-full bg-[#F2F4F7] rounded-full h-2">
@@ -74,9 +75,7 @@ export function UniversityCard({ university }: UniversityCardProps) {
             style={{ width: `${Math.min(capitalProgress, 100)}%` }}
           />
         </div>
-        <div className="text-[12px] text-[#1A1A1A]/60 mt-1">
-          {capitalProgress.toFixed(1)}% of goal
-        </div>
+        <div className="text-[12px] text-[#1A1A1A]/60 mt-1">{capitalProgress.toFixed(1)}% of goal</div>
       </div>
 
       {/* Yield Generated */}
@@ -107,4 +106,3 @@ export function UniversityCard({ university }: UniversityCardProps) {
     </div>
   );
 }
-

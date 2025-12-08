@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
-import { parseUSDC, formatUSDCWithCommas, validateDonation } from "~~/utils/format";
-import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { formatUSDCWithCommas, parseUSDC, validateDonation } from "~~/utils/format";
+import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
 export default function WithdrawPage() {
   const router = useRouter();
@@ -115,7 +115,7 @@ export default function WithdrawPage() {
           <input
             type="number"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={e => setAmount(e.target.value)}
             placeholder={formattedPrincipal}
             min="0"
             step="0.01"
@@ -170,4 +170,3 @@ export default function WithdrawPage() {
     </div>
   );
 }
-

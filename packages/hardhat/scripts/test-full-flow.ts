@@ -76,7 +76,7 @@ async function main(hre: HardhatRuntimeEnvironment) {
     "12345678",
     8, // academic
     5, // sports
-    3  // student
+    3, // student
   );
   console.log("✅ Student 1 registered");
 
@@ -87,7 +87,7 @@ async function main(hre: HardhatRuntimeEnvironment) {
     "87654321",
     9, // academic
     7, // sports
-    4  // student
+    4, // student
   );
   console.log("✅ Student 2 registered\n");
 
@@ -117,8 +117,7 @@ async function main(hre: HardhatRuntimeEnvironment) {
 // and properly handle errors.
 main(require("hardhat").config as any)
   .then(() => process.exit(0))
-  .catch((error) => {
+  .catch(error => {
     console.error(error);
     process.exit(1);
   });
-

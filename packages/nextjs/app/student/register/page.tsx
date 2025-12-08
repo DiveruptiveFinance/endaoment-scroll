@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
-import Image from "next/image";
-import { parseUSDC, formatUSDCWithCommas } from "~~/utils/format";
-import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
-import { uploadFileToIpfs } from "~~/utils/ipfs";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { UNIVERSITIES } from "~~/data/universities";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { formatUSDCWithCommas, parseUSDC } from "~~/utils/format";
+import { uploadFileToIpfs } from "~~/utils/ipfs";
+import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
 export default function StudentRegisterPage() {
   const router = useRouter();
@@ -31,7 +31,6 @@ export default function StudentRegisterPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { writeContractAsync: registerStudent } = useScaffoldWriteContract("StudentRegistry");
-  const { writeContractAsync: mintSBT } = useScaffoldWriteContract("StudentSBT");
 
   const handleFileUpload = async (file: File) => {
     try {
@@ -88,14 +87,12 @@ export default function StudentRegisterPage() {
       setTimeout(() => {
         router.push("/student/dashboard");
       }, 2000);
-    } catch (err: any) {
-      console.error("Registration failed:", err);
-      setError(err.message || "Registration failed");
+    } catch (error: any) {
+      console.error("Registration failed:", error);
+      setError(error.message || "Registration failed");
       setTxState("error");
     }
   };
-
-  const selectedUniversity = UNIVERSITIES.find((u) => u.id === formData.university);
 
   return (
     <div className="min-h-screen bg-white">
@@ -104,7 +101,7 @@ export default function StudentRegisterPage() {
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center gap-4 mb-8">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3].map(s => (
             <div key={s} className="flex items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
@@ -114,10 +111,7 @@ export default function StudentRegisterPage() {
                 {s}
               </div>
               {s < 3 && (
-                <div
-                  className={`w-16 h-1 ${step > s ? "bg-[#0052FF]" : "bg-[#F2F4F7]"}`}
-                  style={{ margin: "0 8px" }}
-                />
+                <div className={`w-16 h-1 ${step > s ? "bg-[#0052FF]" : "bg-[#F2F4F7]"}`} style={{ margin: "0 8px" }} />
               )}
             </div>
           ))}
@@ -128,7 +122,7 @@ export default function StudentRegisterPage() {
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <h2 className="text-[24px] font-bold text-[#0A0F1C] mb-6">Select Your University</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {UNIVERSITIES.map((uni) => (
+              {UNIVERSITIES.map(uni => (
                 <button
                   key={uni.id}
                   onClick={() => setFormData({ ...formData, university: uni.id })}
@@ -170,7 +164,7 @@ export default function StudentRegisterPage() {
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
                   placeholder="Your full name"
                 />
@@ -181,7 +175,7 @@ export default function StudentRegisterPage() {
                 <input
                   type="text"
                   value={formData.faculty}
-                  onChange={(e) => setFormData({ ...formData, faculty: e.target.value })}
+                  onChange={e => setFormData({ ...formData, faculty: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
                   placeholder="e.g., Engineering"
                 />
@@ -192,7 +186,7 @@ export default function StudentRegisterPage() {
                 <input
                   type="text"
                   value={formData.career}
-                  onChange={(e) => setFormData({ ...formData, career: e.target.value })}
+                  onChange={e => setFormData({ ...formData, career: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
                   placeholder="e.g., Computer Science"
                 />
@@ -203,7 +197,7 @@ export default function StudentRegisterPage() {
                 <input
                   type="number"
                   value={formData.semester}
-                  onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+                  onChange={e => setFormData({ ...formData, semester: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
                   placeholder="1-10"
                   min="1"
@@ -216,7 +210,7 @@ export default function StudentRegisterPage() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => {
+                  onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) handleFileUpload(file);
                   }}
@@ -232,7 +226,16 @@ export default function StudentRegisterPage() {
               <PrimaryButton variant="secondary" onClick={() => setStep(1)}>
                 ← Back
               </PrimaryButton>
-              <PrimaryButton onClick={() => setStep(3)} disabled={!formData.name || !formData.faculty || !formData.career || !formData.semester || !formData.idDocumentHash}>
+              <PrimaryButton
+                onClick={() => setStep(3)}
+                disabled={
+                  !formData.name ||
+                  !formData.faculty ||
+                  !formData.career ||
+                  !formData.semester ||
+                  !formData.idDocumentHash
+                }
+              >
                 Next →
               </PrimaryButton>
             </div>
@@ -256,7 +259,7 @@ export default function StudentRegisterPage() {
                 <div key={key}>
                   <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">{label}</label>
                   <div className="flex gap-2">
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                       <button
                         key={num}
                         onClick={() => setFormData({ ...formData, [key]: num } as any)}
@@ -292,7 +295,11 @@ export default function StudentRegisterPage() {
                 ← Back
               </PrimaryButton>
               <PrimaryButton onClick={handleSubmit} disabled={isLoadingState(txState) || !address}>
-                {!address ? "Connect Wallet" : isLoadingState(txState) ? getTransactionMessage(txState) : "Complete Registration"}
+                {!address
+                  ? "Connect Wallet"
+                  : isLoadingState(txState)
+                    ? getTransactionMessage(txState)
+                    : "Complete Registration"}
               </PrimaryButton>
             </div>
           </div>
@@ -301,4 +308,3 @@ export default function StudentRegisterPage() {
     </div>
   );
 }
-

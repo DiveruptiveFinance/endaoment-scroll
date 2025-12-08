@@ -8,7 +8,7 @@ export const USDC_DECIMALS = 6;
 /**
  * Fixed APY for MVP: 10% annual
  */
-export const FIXED_APY = 0.10; // 10%
+export const FIXED_APY = 0.1; // 10%
 
 /**
  * Parse USDC amount from string to bigint
@@ -106,7 +106,7 @@ export function calculateProjections(principal: number, apy: number = FIXED_APY)
 export function calculateVotingPower(
   academicAchievements: number,
   sportsAchievements: number,
-  studentAchievements: number
+  studentAchievements: number,
 ): number {
   const base = 1; // Base vote if has SBT
   const academicBonus = academicAchievements * 0.1;
@@ -140,4 +140,3 @@ export function validateDonation(amount: bigint, balance: bigint): { isValid: bo
 
   return { isValid: true };
 }
-

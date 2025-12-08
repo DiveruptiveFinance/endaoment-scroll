@@ -27,7 +27,7 @@ contract MockUSDC is ERC20, Ownable {
      */
     constructor() ERC20("Mock USDC", "USDC") Ownable(msg.sender) {
         // Mint 1M USDC to deployer (1_000_000 * 10^6)
-        _mint(msg.sender, 1_000_000 * 10**6);
+        _mint(msg.sender, 1_000_000 * 10 ** 6);
     }
 
     /**
@@ -71,6 +71,6 @@ contract MockUSDC is ERC20, Ownable {
      * @dev Anyone can call this for testing purposes
      */
     function faucet() external {
-        _mint(msg.sender, 10_000 * 10**6); // 10000 USDC
+        _mint(msg.sender, 10_000 * 10 ** 6); // 10000 USDC
     }
 }

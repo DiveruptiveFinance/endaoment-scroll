@@ -49,4 +49,3 @@ export default deployLosslessVault;
 
 deployLosslessVault.tags = ["LosslessVault"];
 deployLosslessVault.dependencies = ["MockUSDC", "MockAavePool", "YieldSplitter"];
-

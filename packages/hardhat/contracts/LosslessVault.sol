@@ -148,4 +148,3 @@ contract LosslessVault is ERC4626, Ownable {
         return aavePool.getTotalAssets();
     }
 }
-

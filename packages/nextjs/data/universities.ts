@@ -92,14 +92,13 @@ export const UNIVERSITIES: University[] = [
 ];
 
 export function getUniversityById(id: string): University | undefined {
-  return UNIVERSITIES.find((uni) => uni.id === id);
+  return UNIVERSITIES.find(uni => uni.id === id);
 }
 
 export function getUniversityByWallet(wallet: string): University | undefined {
-  return UNIVERSITIES.find((uni) => uni.wallet.toLowerCase() === wallet.toLowerCase());
+  return UNIVERSITIES.find(uni => uni.wallet.toLowerCase() === wallet.toLowerCase());
 }
 
 export function getAllActiveUniversities(): University[] {
-  return UNIVERSITIES.filter((uni) => uni.isActive);
+  return UNIVERSITIES.filter(uni => uni.isActive);
 }
-

@@ -27,18 +27,9 @@ contract UniversityRegistry is Ownable {
     string[] public universityIds;
 
     // Events
-    event UniversityRegistered(
-        string indexed universityId,
-        string name,
-        address indexed wallet,
-        uint256 timestamp
-    );
+    event UniversityRegistered(string indexed universityId, string name, address indexed wallet, uint256 timestamp);
 
-    event UniversityWalletUpdated(
-        string indexed universityId,
-        address indexed oldWallet,
-        address indexed newWallet
-    );
+    event UniversityWalletUpdated(string indexed universityId, address indexed oldWallet, address indexed newWallet);
 
     event UniversityLocked(string indexed universityId, address indexed wallet);
     event UniversityActivated(string indexed universityId);
@@ -60,11 +51,7 @@ contract UniversityRegistry is Ownable {
      * @param name Full name of the university
      * @param wallet Wallet address to receive yield
      */
-    function registerUniversity(
-        string memory universityId,
-        string memory name,
-        address wallet
-    ) external onlyOwner {
+    function registerUniversity(string memory universityId, string memory name, address wallet) external onlyOwner {
         require(bytes(universityId).length > 0, "University ID cannot be empty");
         require(bytes(name).length > 0, "University name cannot be empty");
         require(wallet != address(0), "Invalid wallet address");
@@ -201,4 +188,3 @@ contract UniversityRegistry is Ownable {
         return activeIds;
     }
 }
-

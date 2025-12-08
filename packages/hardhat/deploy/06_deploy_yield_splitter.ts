@@ -25,11 +25,7 @@ const deployYieldSplitter: DeployFunction = async function (hre: HardhatRuntimeE
 
   await deploy("YieldSplitter", {
     from: deployer,
-    args: [
-      await mockUSDC.getAddress(),
-      UNIVERSITY_WALLET,
-      await timelockController.getAddress(),
-    ],
+    args: [await mockUSDC.getAddress(), UNIVERSITY_WALLET, await timelockController.getAddress()],
     log: true,
     autoMine: true,
   });
@@ -51,4 +47,3 @@ export default deployYieldSplitter;
 
 deployYieldSplitter.tags = ["YieldSplitter"];
 deployYieldSplitter.dependencies = ["MockUSDC", "TimelockController"];
-
