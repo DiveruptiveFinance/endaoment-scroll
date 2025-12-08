@@ -59,7 +59,7 @@ export default function WithdrawPage() {
         args: [amountBigInt, address, address], // assets, receiver, owner
       });
 
-      setTxHash(tx);
+      setTxHash(tx || null);
       setTxState("success");
 
       setTimeout(() => {

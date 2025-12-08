@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
+  534351: {
     AllocationManager: {
-      address: "0x36C02dA8a0983159322a80FFE9F24b1acfF8B570",
+      address: "0x9D219b2A64B0E2BA1659E37Bf4C25bA15639B240",
       abi: [
         {
           inputs: [
@@ -620,10 +620,10 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deployedOnBlock: 72,
+      deployedOnBlock: 15356427,
     },
     EndaomentVault: {
-      address: "0x4c5859f0F772848b2D91F1D83E2Fe57935348029",
+      address: "0xcCA307ce0a030a42A068c7c10a2376FdaD8544aF",
       abi: [
         {
           inputs: [
@@ -1869,35 +1869,388 @@ const deployedContracts = {
         approve: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         asset: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         balanceOf: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        convertToAssets: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        convertToShares: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        convertToAssets:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        convertToShares:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         decimals: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         deposit: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        maxDeposit: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        maxDeposit:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         maxMint: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         maxRedeem: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        maxWithdraw: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        maxWithdraw:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         mint: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         name: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        previewDeposit: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        previewMint: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        previewRedeem: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        previewWithdraw: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        previewDeposit:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        previewMint:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        previewRedeem:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        previewWithdraw:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         redeem: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         symbol: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        totalAssets: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        totalSupply: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        totalAssets:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        totalSupply:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         transfer: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
-        transferFrom: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
+        transferFrom:
+          "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         withdraw: "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol",
         owner: "@openzeppelin/contracts/access/Ownable.sol",
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deployedOnBlock: 75,
+      deployedOnBlock: 15356431,
+    },
+    MockAavePool: {
+      address: "0x72b012CacAa2Efd546c445A4F183EF2acaCf9B68",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_asset",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "OwnableInvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "OwnableUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "Supply",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "Withdraw",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "timestamp",
+              type: "uint256",
+            },
+          ],
+          name: "YieldAdded",
+          type: "event",
+        },
+        {
+          inputs: [],
+          name: "accumulatedYield",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "adminAddYield",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "asset",
+          outputs: [
+            {
+              internalType: "contract IERC20",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAvailableYield",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getTotalAssets",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "getUserSupply",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "harvestYield",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "onBehalfOf",
+              type: "address",
+            },
+          ],
+          name: "supply",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalSupply",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "userSupplies",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+          ],
+          name: "withdraw",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+      },
+      deployedOnBlock: 15356436,
     },
     MockUSDC: {
-      address: "0x851356ae760d987E095750cCeb3bC6014560891C",
+      address: "0xaE742c7414937A43177bD1bF9cDBFCaF1a6E2Ccb",
       abi: [
         {
           inputs: [],
@@ -2397,10 +2750,10 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deployedOnBlock: 58,
+      deployedOnBlock: 15356414,
     },
     StudentRegistry: {
-      address: "0x95401dc811bb5740090279Ba06cfA8fcF6113778",
+      address: "0xb7C7Af8E4c6e13193ee38Ef776D2364d4E9E002C",
       abi: [
         {
           inputs: [],
@@ -2731,6 +3084,49 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "university",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "researchArea",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "studentId",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "academicAchievements",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "sportsAchievements",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "studentAchievements",
+              type: "uint256",
+            },
+          ],
+          name: "registerStudent",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "renounceOwnership",
           outputs: [],
@@ -2748,6 +3144,32 @@ const deployedContracts = {
           name: "setAllocationManager",
           outputs: [],
           stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_studentSBT",
+              type: "address",
+            },
+          ],
+          name: "setStudentSBT",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "studentSBT",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
@@ -2777,10 +3199,10 @@ const deployedContracts = {
         renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
         transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
       },
-      deployedOnBlock: 62,
+      deployedOnBlock: 15356416,
     },
     YourContract: {
-      address: "0xf5059a5D33d5853360D16C683c16e67980206f36",
+      address: "0xec81C37FfDa5CE5F9e0a9B85e8d80a7ceB6e4298",
       abi: [
         {
           inputs: [
@@ -2921,7 +3343,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 60,
+      deployedOnBlock: 15356415,
     },
   },
 } as const;
