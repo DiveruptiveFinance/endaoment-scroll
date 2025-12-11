@@ -103,3 +103,4 @@ export function getAllActiveUniversities(): University[] {
   return UNIVERSITIES.filter(uni => uni.isActive);
 }
 
+

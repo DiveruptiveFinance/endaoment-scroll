@@ -31,6 +31,13 @@ export default function AdminYieldPage() {
 
   const { writeContractAsync: addYield } = useScaffoldWriteContract("MockAavePool");
   const { writeContractAsync: harvestYield } = useScaffoldWriteContract("LosslessVault");
+  
+  // Read MockUSDC balance for supply
+  const { data: usdcBalance } = useScaffoldReadContract({
+    contractName: "MockUSDC",
+    functionName: "balanceOf",
+    args: [address],
+  });
 
   const handleAddYield = async () => {
     if (!address) {
@@ -41,6 +48,12 @@ export default function AdminYieldPage() {
     const amountBigInt = parseUSDC(yieldAmount);
     if (amountBigInt <= 0n) {
       setError("Amount must be greater than 0");
+      return;
+    }
+
+    // Check if there's supply in the pool
+    if ((totalSupply || 0n) === 0n) {
+      setError("No supply in pool. Please supply USDC first before adding yield.");
       return;
     }
 
@@ -61,6 +74,7 @@ export default function AdminYieldPage() {
       setTxState("error");
     }
   };
+
 
   const handleHarvestYield = async () => {
     if (!address) {
@@ -119,11 +133,26 @@ export default function AdminYieldPage() {
           </div>
         </div>
 
+        {/* Supply to Pool (if no supply) */}
+        {(totalSupply || 0n) === 0n && (
+          <div className="bg-[#FFA500]/10 border border-[#FFA500] rounded-[6px] p-6 mb-6">
+            <h2 className="text-[20px] font-bold text-[#0A0F1C] mb-4">⚠️ No Supply in Pool</h2>
+            <p className="text-[14px] text-[#1A1A1A]/70 mb-4">
+              You need to supply USDC to MockAavePool first before you can generate yield. 
+              Go to the debug page to approve and supply USDC, or make a donation through the platform.
+            </p>
+            <p className="text-[12px] text-[#1A1A1A]/50">
+              Current USDC Balance: ${formatUSDCWithCommas(usdcBalance || 0n)}
+            </p>
+          </div>
+        )}
+
         {/* Add Yield */}
         <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] mb-6">
           <h2 className="text-[20px] font-bold text-[#0A0F1C] mb-4">Simulate Yield Generation</h2>
           <p className="text-[14px] text-[#1A1A1A]/70 mb-4">
             Add yield to MockAavePool for demo purposes. This simulates profit generation.
+            <strong className="block mt-2">Note: Pool must have supply first.</strong>
           </p>
           <div className="flex gap-4">
             <input
@@ -133,7 +162,10 @@ export default function AdminYieldPage() {
               placeholder="1000"
               className="flex-1 px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
             />
-            <PrimaryButton onClick={handleAddYield} disabled={isLoadingState(txState)}>
+            <PrimaryButton 
+              onClick={handleAddYield} 
+              disabled={isLoadingState(txState) || (totalSupply || 0n) === 0n}
+            >
               Add Yield
             </PrimaryButton>
           </div>

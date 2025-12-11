@@ -17,9 +17,8 @@ export default function StudentRegisterPage() {
   const [formData, setFormData] = useState({
     name: "",
     university: "",
-    faculty: "",
-    career: "",
-    semester: "",
+    researchArea: "", // faculty + career combined
+    studentId: "", // enrollment ID
     idDocument: null as File | null,
     idDocumentHash: "",
     academicAchievements: 0,
@@ -50,10 +49,8 @@ export default function StudentRegisterPage() {
     if (
       !formData.name ||
       !formData.university ||
-      !formData.faculty ||
-      !formData.career ||
-      !formData.semester ||
-      !formData.idDocumentHash
+      !formData.researchArea ||
+      !formData.studentId
     ) {
       setError("Please fill all required fields");
       return;
@@ -63,16 +60,14 @@ export default function StudentRegisterPage() {
     setTxState("depositing");
 
     try {
-      // Register student
+      // Register student - Contract expects: name, university, researchArea, studentId, academicAchievements, sportsAchievements, studentAchievements
       await registerStudent({
         functionName: "registerStudent",
         args: [
           formData.name,
           formData.university,
-          formData.faculty,
-          formData.career,
-          BigInt(parseInt(formData.semester)),
-          formData.idDocumentHash,
+          formData.researchArea,
+          formData.studentId,
           BigInt(formData.academicAchievements),
           BigInt(formData.sportsAchievements),
           BigInt(formData.studentAchievements),
@@ -170,37 +165,24 @@ export default function StudentRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Faculty *</label>
+                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Research Area / Career *</label>
                 <input
                   type="text"
-                  value={formData.faculty}
-                  onChange={e => setFormData({ ...formData, faculty: e.target.value })}
+                  value={formData.researchArea}
+                  onChange={e => setFormData({ ...formData, researchArea: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
-                  placeholder="e.g., Engineering"
+                  placeholder="e.g., Computer Science, Engineering"
                 />
               </div>
 
               <div>
-                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Career *</label>
+                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Student ID / Enrollment Number *</label>
                 <input
                   type="text"
-                  value={formData.career}
-                  onChange={e => setFormData({ ...formData, career: e.target.value })}
+                  value={formData.studentId}
+                  onChange={e => setFormData({ ...formData, studentId: e.target.value })}
                   className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
-                  placeholder="e.g., Computer Science"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Semester *</label>
-                <input
-                  type="number"
-                  value={formData.semester}
-                  onChange={e => setFormData({ ...formData, semester: e.target.value })}
-                  className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
-                  placeholder="1-10"
-                  min="1"
-                  max="10"
+                  placeholder="e.g., ID#12345"
                 />
               </div>
 
@@ -229,10 +211,8 @@ export default function StudentRegisterPage() {
                 onClick={() => setStep(3)}
                 disabled={
                   !formData.name ||
-                  !formData.faculty ||
-                  !formData.career ||
-                  !formData.semester ||
-                  !formData.idDocumentHash
+                  !formData.researchArea ||
+                  !formData.studentId
                 }
               >
                 Next →
