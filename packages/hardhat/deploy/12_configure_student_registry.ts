@@ -38,3 +38,4 @@ export default configureStudentRegistry;
 configureStudentRegistry.tags = ["ConfigureStudentRegistry"];
 configureStudentRegistry.dependencies = ["StudentRegistry", "StudentSBT"];
 
+

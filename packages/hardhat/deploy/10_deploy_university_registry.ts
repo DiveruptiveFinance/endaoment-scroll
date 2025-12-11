@@ -78,3 +78,4 @@ export default deployUniversityRegistry;
 
 deployUniversityRegistry.tags = ["UniversityRegistry"];
 
+
