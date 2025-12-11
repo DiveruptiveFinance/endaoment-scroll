@@ -48,6 +48,13 @@ function DonateContent() {
   const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
   const { writeContractAsync: depositToVault } = useScaffoldWriteContract("LosslessVault");
 
+  // Read total donations for this university
+  const { data: totalDonations } = useScaffoldReadContract({
+    contractName: "DonationTracker",
+    functionName: "getTotalDonations",
+    args: university?.wallet ? [university.wallet as `0x${string}`] : undefined,
+  });
+
   const balance = usdcBalance || 0n;
   const formattedBalance = formatUSDCWithCommas(balance);
 

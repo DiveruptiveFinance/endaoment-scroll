@@ -238,3 +238,4 @@ Output Directory: .next
 **No hacer cambios en el código hasta confirmar la configuración de Vercel.**
 
 
+

@@ -155,3 +155,4 @@ Si todos pasan, el deploy en Vercel debería ser exitoso.
 **Con estos cambios, los errores no deberían volver a ocurrir.**
 
 
+

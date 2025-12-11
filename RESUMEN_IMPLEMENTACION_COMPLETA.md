@@ -306,3 +306,4 @@ import { TransactionState, getTransactionMessage } from "~~/utils/transactionSta
 **🚀 Siguiente paso:** Compilar y desplegar contratos, luego empezar con frontend.
 
 
+

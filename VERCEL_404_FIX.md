@@ -91,3 +91,4 @@ packages/nextjs/app/
 4. **No usar NextPage**: Es solo para Pages Router, no App Router
 
 
+

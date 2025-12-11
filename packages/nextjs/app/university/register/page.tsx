@@ -51,7 +51,7 @@ export default function UniversityRegisterPage() {
       setTxState("success");
       setTimeout(() => {
         router.push("/university/dashboard");
-      }, 3000);
+      }, 2000);
     } catch (err: any) {
       console.error("Registration failed:", err);
       setError(err.message || "Transaction failed");
