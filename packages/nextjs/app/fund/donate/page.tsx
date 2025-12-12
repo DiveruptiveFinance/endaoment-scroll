@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { getUniversityById } from "~~/data/universities";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { formatUSDCWithCommas, parseUSDC, validateDonation } from "~~/utils/format";
 import { TransactionState, getTransactionMessage, isLoadingState } from "~~/utils/transactionStates";
 
@@ -32,21 +32,21 @@ function DonateContent() {
     args: [address],
   });
 
-  // Read LosslessVault address
-  const { data: vaultInfo } = useScaffoldReadContract({
-    contractName: "LosslessVault",
-    functionName: "asset",
-  });
+  // Get vault contract address (try LosslessVault first, fallback to EndaomentVault)
+  const { data: losslessVaultInfo } = useDeployedContractInfo("LosslessVault");
+  const { data: endaomentVaultInfo } = useDeployedContractInfo("EndaomentVault");
+  const vaultAddress = losslessVaultInfo?.address || endaomentVaultInfo?.address;
+  const vaultContractName = losslessVaultInfo ? "LosslessVault" : "EndaomentVault";
 
-  // Read current allowance
+  // Read current allowance (only if vault is deployed and address is available)
   const { data: currentAllowance } = useScaffoldReadContract({
     contractName: "MockUSDC",
     functionName: "allowance",
-    args: [address, vaultInfo],
+    args: address && vaultAddress ? [address, vaultAddress] : undefined,
   });
 
   const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
-  const { writeContractAsync: depositToVault } = useScaffoldWriteContract("LosslessVault");
+  const { writeContractAsync: depositToVault } = useScaffoldWriteContract(vaultContractName as "LosslessVault" | "EndaomentVault");
 
   // Read total donations for this university (for display in card)
   const { data: totalDonations } = useScaffoldReadContract({
@@ -72,7 +72,7 @@ function DonateContent() {
 
   const selectedAmount = amount ? parseFloat(amount) : customAmount ? parseFloat(customAmount) : 0;
   const amountBigInt = selectedAmount > 0 ? parseUSDC(selectedAmount.toString()) : 0n;
-  const needsApproval = currentAllowance ? currentAllowance < amountBigInt : true;
+  const needsApproval = vaultAddress && currentAllowance ? currentAllowance < amountBigInt : true;
 
   const handleDonate = async () => {
     if (!address) {
@@ -92,11 +92,11 @@ function DonateContent() {
 
     try {
       // Step 1: Approve if needed
-      if (needsApproval) {
+      if (needsApproval && vaultAddress) {
         setTxState("approving");
         await approveUSDC({
           functionName: "approve",
-          args: [vaultInfo, amountBigInt],
+          args: [vaultAddress, amountBigInt],
         });
       }
 
@@ -233,25 +233,36 @@ function DonateContent() {
           </div>
         )}
 
+        {/* Error if vault not deployed */}
+        {!vaultAddress && (
+          <div className="bg-[#FF5B5B]/10 border border-[#FF5B5B] rounded-[6px] p-4 mb-6">
+            <p className="text-[14px] text-[#FF5B5B]">
+              ⚠️ No hay vault desplegado. Por favor, despliega LosslessVault o EndaomentVault primero.
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex flex-col gap-3">
-          {needsApproval && (
+          {needsApproval && vaultAddress && (
             <>
               <PrimaryButton
                 onClick={handleDonate}
-                disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+                disabled={isLoadingState(txState) || selectedAmount <= 0 || !address || !vaultAddress}
                 className="w-full"
               >
                 {!address
                   ? "Conectar Wallet"
-                  : isLoadingState(txState) && txState === "approving"
-                    ? "Aprobando..."
-                    : "① Aprueba Donación"}
+                  : !vaultAddress
+                    ? "Vault no desplegado"
+                    : isLoadingState(txState) && txState === "approving"
+                      ? "Aprobando..."
+                      : "① Aprueba Donación"}
               </PrimaryButton>
               {txState === "approving" && (
                 <PrimaryButton
                   onClick={handleDonate}
-                  disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+                  disabled={isLoadingState(txState) || selectedAmount <= 0 || !address || !vaultAddress}
                   className="w-full"
                   variant="secondary"
                 >
@@ -260,17 +271,19 @@ function DonateContent() {
               )}
             </>
           )}
-          {!needsApproval && (
+          {!needsApproval && vaultAddress && (
             <PrimaryButton
               onClick={handleDonate}
-              disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+              disabled={isLoadingState(txState) || selectedAmount <= 0 || !address || !vaultAddress}
               className="w-full"
             >
               {!address
                 ? "Conectar Wallet"
-                : isLoadingState(txState)
-                  ? getTransactionMessage(txState)
-                  : "② Confirmar"}
+                : !vaultAddress
+                  ? "Vault no desplegado"
+                  : isLoadingState(txState)
+                    ? getTransactionMessage(txState)
+                    : "② Confirmar"}
             </PrimaryButton>
           )}
         </div>
