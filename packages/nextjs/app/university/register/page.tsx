@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { UNIVERSITIES } from "~~/data/universities";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export default function UniversityRegisterPage() {
   const router = useRouter();
@@ -144,5 +144,3 @@ export default function UniversityRegisterPage() {
     </div>
   );
 }
-
-

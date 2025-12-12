@@ -5,17 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { FlowDiagram } from "~~/components/ui/FlowDiagram";
 import { Logo } from "~~/components/ui/Logo";
 import { PrimaryButton } from "~~/components/ui/PrimaryButton";
 import { StatsCard } from "~~/components/ui/StatsCard";
-import { FlowDiagram } from "~~/components/ui/FlowDiagram";
 import { PLATFORM_STATS } from "~~/data/constants";
 import { UNIVERSITIES } from "~~/data/universities";
 
 export default function Home() {
   const router = useRouter();
-  const { address: connectedAddress, isConnected } = useAccount();
-  const [userType, setUserType] = useState<"student" | "donor" | null>(null);
+  const { isConnected } = useAccount();
+  const [userType, setUserType] = useState<"student" | "donor" | "university" | null>(null);
 
   // Handle redirect after wallet connection
   useEffect(() => {
@@ -71,9 +71,7 @@ export default function Home() {
                       >
                         <div className="text-[32px] font-bold text-[#0052FF] mb-2">①</div>
                         <h3 className="text-[20px] font-bold text-[#0A0F1C] mb-2">Universidad</h3>
-                        <p className="text-[14px] text-[#1A1A1A]/70">
-                          Recibe yield y gestiona fondos
-                        </p>
+                        <p className="text-[14px] text-[#1A1A1A]/70">Recibe yield y gestiona fondos</p>
                       </button>
                     );
                   }}
@@ -95,9 +93,7 @@ export default function Home() {
                       >
                         <div className="text-[32px] font-bold text-[#0052FF] mb-2">②</div>
                         <h3 className="text-[20px] font-bold text-[#0A0F1C] mb-2">Donador</h3>
-                        <p className="text-[14px] text-[#1A1A1A]/70">
-                          Invierte y genera impacto perpetuo
-                        </p>
+                        <p className="text-[14px] text-[#1A1A1A]/70">Invierte y genera impacto perpetuo</p>
                       </button>
                     );
                   }}
@@ -119,9 +115,7 @@ export default function Home() {
                       >
                         <div className="text-[32px] font-bold text-[#0052FF] mb-2">③</div>
                         <h3 className="text-[20px] font-bold text-[#0A0F1C] mb-2">Estudiante</h3>
-                        <p className="text-[14px] text-[#1A1A1A]/70">
-                          Regístrate y recibe fondos
-                        </p>
+                        <p className="text-[14px] text-[#1A1A1A]/70">Regístrate y recibe fondos</p>
                       </button>
                     );
                   }}
@@ -205,7 +199,6 @@ export default function Home() {
           <FlowDiagram />
         </div>
       </section>
-
     </div>
   );
 }

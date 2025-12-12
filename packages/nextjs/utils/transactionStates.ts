@@ -63,5 +63,3 @@ export function isLoadingState(state: TransactionState): boolean {
 export function isFinalState(state: TransactionState): boolean {
   return state === "success" || state === "error";
 }
-
-

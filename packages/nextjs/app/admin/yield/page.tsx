@@ -31,7 +31,7 @@ export default function AdminYieldPage() {
 
   const { writeContractAsync: addYield } = useScaffoldWriteContract("MockAavePool");
   const { writeContractAsync: harvestYield } = useScaffoldWriteContract("LosslessVault");
-  
+
   // Read MockUSDC balance for supply
   const { data: usdcBalance } = useScaffoldReadContract({
     contractName: "MockUSDC",
@@ -74,7 +74,6 @@ export default function AdminYieldPage() {
       setTxState("error");
     }
   };
-
 
   const handleHarvestYield = async () => {
     if (!address) {
@@ -138,8 +137,8 @@ export default function AdminYieldPage() {
           <div className="bg-[#FFA500]/10 border border-[#FFA500] rounded-[6px] p-6 mb-6">
             <h2 className="text-[20px] font-bold text-[#0A0F1C] mb-4">⚠️ No Supply in Pool</h2>
             <p className="text-[14px] text-[#1A1A1A]/70 mb-4">
-              You need to supply USDC to MockAavePool first before you can generate yield. 
-              Go to the debug page to approve and supply USDC, or make a donation through the platform.
+              You need to supply USDC to MockAavePool first before you can generate yield. Go to the debug page to
+              approve and supply USDC, or make a donation through the platform.
             </p>
             <p className="text-[12px] text-[#1A1A1A]/50">
               Current USDC Balance: ${formatUSDCWithCommas(usdcBalance || 0n)}
@@ -162,10 +161,7 @@ export default function AdminYieldPage() {
               placeholder="1000"
               className="flex-1 px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
             />
-            <PrimaryButton 
-              onClick={handleAddYield} 
-              disabled={isLoadingState(txState) || (totalSupply || 0n) === 0n}
-            >
+            <PrimaryButton onClick={handleAddYield} disabled={isLoadingState(txState) || (totalSupply || 0n) === 0n}>
               Add Yield
             </PrimaryButton>
           </div>

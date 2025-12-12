@@ -1,9 +1,9 @@
 "use client";
 
 import { useAccount } from "wagmi";
+import { getUniversityByWallet } from "~~/data/universities";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { formatUSDCWithCommas } from "~~/utils/format";
-import { getUniversityByWallet } from "~~/data/universities";
 
 export default function UniversityDashboardPage() {
   const { address } = useAccount();
@@ -65,7 +65,6 @@ export default function UniversityDashboardPage() {
 
   const capitalRaised = totalDonations ? Number(formatUSDCWithCommas(totalDonations).replace(/,/g, "")) : 0;
   const yieldReceived = totalYield ? Number(formatUSDCWithCommas(totalYield).replace(/,/g, "")) : 0;
-  const currentBalance = walletBalance ? Number(formatUSDCWithCommas(walletBalance).replace(/,/g, "")) : 0;
   const capitalProgress = (capitalRaised / university.capitalGoal) * 100;
 
   return (
@@ -85,9 +84,7 @@ export default function UniversityDashboardPage() {
             <div className="text-[28px] font-bold text-[#0052FF] mb-2">
               ${formatUSDCWithCommas(totalDonations || 0n)}
             </div>
-            <div className="text-[12px] text-[#1A1A1A]/60">
-              Meta: ${university.capitalGoal.toLocaleString()}
-            </div>
+            <div className="text-[12px] text-[#1A1A1A]/60">Meta: ${university.capitalGoal.toLocaleString()}</div>
             <div className="w-full bg-[#F2F4F7] rounded-full h-2 mt-3">
               <div
                 className="h-2 rounded-full bg-[#0052FF] transition-all duration-500"
@@ -100,23 +97,15 @@ export default function UniversityDashboardPage() {
           {/* Yield Received */}
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <div className="text-[14px] text-[#1A1A1A]/70 mb-2">Yield Recibido</div>
-            <div className="text-[28px] font-bold text-[#5CE27F]">
-              ${formatUSDCWithCommas(totalYield || 0n)}
-            </div>
-            <div className="text-[12px] text-[#1A1A1A]/60 mt-2">
-              Fondos disponibles para operaciones
-            </div>
+            <div className="text-[28px] font-bold text-[#5CE27F]">${formatUSDCWithCommas(totalYield || 0n)}</div>
+            <div className="text-[12px] text-[#1A1A1A]/60 mt-2">Fondos disponibles para operaciones</div>
           </div>
 
           {/* Current Balance */}
           <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
             <div className="text-[14px] text-[#1A1A1A]/70 mb-2">Balance Actual</div>
-            <div className="text-[28px] font-bold text-[#0A0F1C]">
-              ${formatUSDCWithCommas(walletBalance || 0n)}
-            </div>
-            <div className="text-[12px] text-[#1A1A1A]/60 mt-2">
-              USDC en tu wallet
-            </div>
+            <div className="text-[28px] font-bold text-[#0A0F1C]">${formatUSDCWithCommas(walletBalance || 0n)}</div>
+            <div className="text-[12px] text-[#1A1A1A]/60 mt-2">USDC en tu wallet</div>
           </div>
         </div>
 
@@ -127,13 +116,13 @@ export default function UniversityDashboardPage() {
             <div className="bg-[#F8FAFC] rounded-[6px] p-4">
               <div className="text-[16px] font-semibold text-[#0A0F1C] mb-2">70% Operaciones</div>
               <div className="text-[14px] text-[#1A1A1A]/70">
-                ${((yieldReceived * 0.7).toFixed(2))} USDC para gastos operativos
+                ${(yieldReceived * 0.7).toFixed(2)} USDC para gastos operativos
               </div>
             </div>
             <div className="bg-[#F8FAFC] rounded-[6px] p-4">
               <div className="text-[16px] font-semibold text-[#0A0F1C] mb-2">30% Estudiantes</div>
               <div className="text-[14px] text-[#1A1A1A]/70">
-                ${((yieldReceived * 0.3).toFixed(2))} USDC distribuido a estudiantes
+                ${(yieldReceived * 0.3).toFixed(2)} USDC distribuido a estudiantes
               </div>
             </div>
           </div>
@@ -155,4 +144,3 @@ export default function UniversityDashboardPage() {
     </div>
   );
 }
-

@@ -48,7 +48,7 @@ function DonateContent() {
   const { writeContractAsync: approveUSDC } = useScaffoldWriteContract("MockUSDC");
   const { writeContractAsync: depositToVault } = useScaffoldWriteContract("LosslessVault");
 
-  // Read total donations for this university
+  // Read total donations for this university (for display in card)
   const { data: totalDonations } = useScaffoldReadContract({
     contractName: "DonationTracker",
     functionName: "getTotalDonations",
@@ -147,17 +147,35 @@ function DonateContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-16 max-w-2xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-[36px] font-bold text-[#0A0F1C] mb-4">Make a Donation</h1>
-          {university && (
-            <p className="text-[16px] text-[#1A1A1A]/70">
-              Funding: <span className="font-semibold">{university.shortName}</span>
-            </p>
-          )}
-        </div>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <div className="container mx-auto px-4 py-16 max-w-3xl">
+        {/* University Card */}
+        {university && (
+          <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] mb-8">
+            <div className="flex items-start gap-6">
+              {/* Logo */}
+              <div className="w-20 h-20 rounded-[6px] bg-[#F8FAFC] border border-[#F2F4F7] flex items-center justify-center flex-shrink-0">
+                <span className="text-[32px] font-bold text-[#0052FF]">{university.shortName.charAt(0)}</span>
+              </div>
+
+              {/* University Info */}
+              <div className="flex-1">
+                <h2 className="text-[24px] font-bold text-[#0A0F1C] mb-2">{university.shortName}</h2>
+                <p className="text-[14px] text-[#1A1A1A]/70 mb-4">{university.description}</p>
+
+                {/* Funds Secured */}
+                <div className="bg-[#F8FAFC] rounded-[6px] p-4">
+                  <div className="text-[12px] text-[#1A1A1A]/70 mb-1">Fondos Asegurados en EnDAOment</div>
+                  <div className="text-[20px] font-bold text-[#0052FF]">
+                    ${formatUSDCWithCommas(totalDonations || 0n)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <h1 className="text-[36px] font-bold text-[#0A0F1C] mb-8">Donar a {university?.shortName || "Universidad"}</h1>
 
         {/* Balance Card */}
         <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] mb-6">
@@ -167,51 +185,37 @@ function DonateContent() {
 
         {/* Amount Selection */}
         <div className="bg-white rounded-[6px] p-6 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)] mb-6">
-          <h2 className="text-[20px] font-bold text-[#0A0F1C] mb-4">Select Amount</h2>
+          <h2 className="text-[20px] font-bold text-[#0A0F1C] mb-2">Selecciona cuanto quieres Donar</h2>
+          <p className="text-[14px] text-[#1A1A1A]/70 mb-4">Tu capital se mantiene seguro, solo el yield se distribuye</p>
 
           {/* Quick Amount Buttons */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="flex gap-3 mb-4">
             {quickAmounts.map(value => (
               <button
                 key={value}
                 onClick={() => handleQuickAmount(value)}
-                className={`px-4 py-3 rounded-[6px] border-2 transition-all ${
+                className={`px-6 py-3 rounded-[6px] border-2 transition-all font-semibold ${
                   amount === value.toString()
-                    ? "border-[#0052FF] bg-[#0052FF]/10 text-[#0052FF] font-semibold"
-                    : "border-[#F2F4F7] hover:border-[#0052FF]/50"
+                    ? "border-[#0052FF] bg-[#0052FF]/10 text-[#0052FF]"
+                    : "border-[#F2F4F7] hover:border-[#0052FF]/50 text-[#0A0F1C]"
                 }`}
               >
-                ${value.toLocaleString()}
+                ${(value / 1000).toFixed(0)}K
               </button>
             ))}
           </div>
 
           {/* Custom Amount Input */}
-          <div>
-            <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Or enter custom amount</label>
+          <div className="mb-6">
+            <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">$ Elige</label>
             <input
               type="number"
               value={customAmount}
               onChange={e => handleCustomAmount(e.target.value)}
-              placeholder="0.00"
-              min="10"
-              step="0.01"
+              placeholder="Ingresa cantidad en USDC"
               className="w-full px-4 py-3 rounded-[6px] border border-[#F2F4F7] focus:border-[#0052FF] focus:outline-none"
             />
-            {selectedAmount > 0 && (
-              <p className="text-[14px] text-[#1A1A1A]/70 mt-2">
-                You will donate: <span className="font-semibold">${selectedAmount.toLocaleString()} USDC</span>
-              </p>
-            )}
           </div>
-        </div>
-
-        {/* Info Card */}
-        <div className="bg-[#F2F4F7] rounded-[6px] p-4 mb-6">
-          <p className="text-[14px] text-[#1A1A1A]/70">
-            💡 <strong>Lossless Donation:</strong> Your principal stays safe. Only the yield (10% APY) is donated to
-            education.
-          </p>
         </div>
 
         {/* Error Message */}
@@ -229,19 +233,47 @@ function DonateContent() {
           </div>
         )}
 
-        {/* Donate Button */}
-        <PrimaryButton
-          size="lg"
-          className="w-full"
-          onClick={handleDonate}
-          disabled={isLoadingState(txState) || selectedAmount < 10 || !address}
-        >
-          {!address
-            ? "Connect Wallet"
-            : isLoadingState(txState)
-              ? getTransactionMessage(txState)
-              : `Donate $${selectedAmount > 0 ? selectedAmount.toLocaleString() : "0"} USDC`}
-        </PrimaryButton>
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-3">
+          {needsApproval && (
+            <>
+              <PrimaryButton
+                onClick={handleDonate}
+                disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+                className="w-full"
+              >
+                {!address
+                  ? "Conectar Wallet"
+                  : isLoadingState(txState) && txState === "approving"
+                    ? "Aprobando..."
+                    : "① Aprueba Donación"}
+              </PrimaryButton>
+              {txState === "approving" && (
+                <PrimaryButton
+                  onClick={handleDonate}
+                  disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+                  className="w-full"
+                  variant="secondary"
+                >
+                  {isLoadingState(txState) ? getTransactionMessage(txState) : "② Confirmar"}
+                </PrimaryButton>
+              )}
+            </>
+          )}
+          {!needsApproval && (
+            <PrimaryButton
+              onClick={handleDonate}
+              disabled={isLoadingState(txState) || selectedAmount <= 0 || !address}
+              className="w-full"
+            >
+              {!address
+                ? "Conectar Wallet"
+                : isLoadingState(txState)
+                  ? getTransactionMessage(txState)
+                  : "② Confirmar"}
+            </PrimaryButton>
+          )}
+        </div>
 
         {!address && (
           <p className="text-[14px] text-[#1A1A1A]/70 text-center mt-4">Please connect your wallet to donate</p>

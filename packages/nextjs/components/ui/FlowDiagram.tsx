@@ -6,7 +6,7 @@ export function FlowDiagram() {
   return (
     <div className="bg-white rounded-[6px] p-8 border border-[#F2F4F7] shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
       <h3 className="text-[24px] font-bold text-[#0A0F1C] mb-6 text-center">¿Cómo Funciona?</h3>
-      
+
       {/* Flow Steps */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2">
         {/* Step 1: Donador */}
@@ -96,4 +96,3 @@ export function FlowDiagram() {
     </div>
   );
 }
-

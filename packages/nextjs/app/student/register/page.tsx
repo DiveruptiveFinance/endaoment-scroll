@@ -46,12 +46,7 @@ export default function StudentRegisterPage() {
     }
 
     // Validate
-    if (
-      !formData.name ||
-      !formData.university ||
-      !formData.researchArea ||
-      !formData.studentId
-    ) {
+    if (!formData.name || !formData.university || !formData.researchArea || !formData.studentId) {
       setError("Please fill all required fields");
       return;
     }
@@ -176,7 +171,9 @@ export default function StudentRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">Student ID / Enrollment Number *</label>
+                <label className="block text-[14px] font-semibold text-[#0A0F1C] mb-2">
+                  Student ID / Enrollment Number *
+                </label>
                 <input
                   type="text"
                   value={formData.studentId}
@@ -209,11 +206,7 @@ export default function StudentRegisterPage() {
               </PrimaryButton>
               <PrimaryButton
                 onClick={() => setStep(3)}
-                disabled={
-                  !formData.name ||
-                  !formData.researchArea ||
-                  !formData.studentId
-                }
+                disabled={!formData.name || !formData.researchArea || !formData.studentId}
               >
                 Next →
               </PrimaryButton>

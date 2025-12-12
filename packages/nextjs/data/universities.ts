@@ -102,5 +102,3 @@ export function getUniversityByWallet(wallet: string): University | undefined {
 export function getAllActiveUniversities(): University[] {
   return UNIVERSITIES.filter(uni => uni.isActive);
 }
-
-
